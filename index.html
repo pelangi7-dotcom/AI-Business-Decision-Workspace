@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Kinerja Toko — Executive View</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --positive: #10b981;
+            --positive-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --negative: #ef4444;
+            --negative-light: #fee2e2;
+            --neutral: #6b7280;
+            --accent: #2563eb;
+            --accent-light: #dbeafe;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.5; }
+
+        /* Layout */
+        .app { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: var(--bg-card); border-right: 1px solid var(--border); position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+        .main { flex: 1; margin-left: 260px; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border); }
+        .sidebar-header h1 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+        .sidebar-header p { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+        .nav { padding: 16px 12px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; margin-bottom: 4px; font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+        .nav-item:hover { background: var(--bg-primary); color: var(--text-primary); }
+        .nav-item.active { background: var(--accent-light); color: var(--accent); }
+        .nav-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+
+        /* Header */
+        .topbar { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+        .topbar-title { font-size: 20px; font-weight: 700; }
+        .topbar-filters { display: flex; gap: 12px; align-items: center; }
+        .filter-group { display: flex; flex-direction: column; gap: 4px; }
+        .filter-group label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .filter-group select, .filter-group input { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; background: var(--bg-card); min-width: 140px; }
+        .btn { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: var(--bg-primary); color: var(--text-secondary); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--border); }
+
+        /* Content */
+        .content { padding: 32px; max-width: 1400px; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Data Quality Banner */
+        .dq-banner { background: var(--warning-light); border: 1px solid var(--warning); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
+        .dq-banner.negative { background: var(--negative-light); border-color: var(--negative); }
+        .dq-banner.neutral { background: #f3f4f6; border-color: var(--border); }
+        .dq-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+        .dq-content h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .dq-content p { font-size: 13px; color: var(--text-secondary); }
+        .dq-content ul { margin-top: 8px; margin-left: 16px; font-size: 13px; color: var(--text-secondary); }
+        .dq-content li { margin-bottom: 4px; }
+
+        /* Executive Summary */
+        .exec-summary { background: var(--bg-card); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; border: 1px solid var(--border); }
+        .exec-summary h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .exec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .exec-card { padding: 16px; border-radius: var(--radius-sm); background: var(--bg-primary); border-left: 4px solid var(--accent); }
+        .exec-card.impact { border-left-color: var(--warning); }
+        .exec-card.priority { border-left-color: var(--negative); }
+        .exec-card.action { border-left-color: var(--positive); }
+        .exec-card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 8px; }
+        .exec-card p { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+
+        /* KPI Cards */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .kpi-card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); transition: box-shadow 0.2s; }
+        .kpi-card:hover { box-shadow: var(--shadow); }
+        .kpi-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .kpi-value { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+        .kpi-value.na { color: var(--text-muted); font-size: 22px; }
+        .kpi-change { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .kpi-change.positive { color: var(--positive); }
+        .kpi-change.negative { color: var(--negative); }
+        .kpi-change.neutral { color: var(--text-muted); }
+
+        /* Section */
+        .section { background: var(--bg-card); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; border: 1px solid var(--border); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .section-title { font-size: 16px; font-weight: 700; }
+        .section-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* Tables */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead th { text-align: left; padding: 12px 16px; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
+        thead th:hover { color: var(--text-primary); }
+        thead th.sortable::after { content: " ↕"; font-size: 11px; color: var(--text-muted); }
+        tbody td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tbody tr:hover { background: var(--bg-primary); }
+        tbody tr.clickable { cursor: pointer; }
+
+        /* Status Badges */
+        .status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .status-healthy { background: var(--positive-light); color: #065f46; }
+        .status-watch { background: var(--warning-light); color: #92400e; }
+        .status-problem { background: var(--negative-light); color: #991b1b; }
+        .status-na { background: #f3f4f6; color: var(--text-muted); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-healthy { background: var(--positive); }
+        .dot-watch { background: var(--warning); }
+        .dot-problem { background: var(--negative); }
+
+        /* Charts placeholder */
+        .chart-container { height: 320px; display: flex; align-items: center; justify-content: center; background: var(--bg-primary); border-radius: var(--radius-sm); border: 2px dashed var(--border); color: var(--text-muted); font-size: 14px; flex-direction: column; gap: 8px; }
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+
+        /* Store Detail Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 40px; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--bg-card); border-radius: var(--radius); width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+        .modal-header { padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { font-size: 20px; font-weight: 700; }
+        .modal-close { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: none; cursor: pointer; font-size: 18px; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; }
+        .modal-close:hover { background: var(--bg-primary); }
+        .modal-body { padding: 32px; }
+
+        /* Detail sections */
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 24px; }
+        .detail-card { padding: 20px; background: var(--bg-primary); border-radius: var(--radius-sm); }
+        .detail-card h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-row .label { color: var(--text-secondary); }
+        .detail-row .value { font-weight: 600; }
+        .detail-row .value.na { color: var(--text-muted); font-weight: 400; font-style: italic; }
+
+        /* Analysis blocks */
+        .analysis-block { margin-bottom: 20px; padding: 20px; border-radius: var(--radius-sm); border-left: 4px solid; }
+        .analysis-block.fact { background: #eff6ff; border-left-color: var(--accent); }
+        .analysis-block.analysis { background: #f0fdf4; border-left-color: var(--positive); }
+        .analysis-block.assumption { background: #fffbeb; border-left-color: var(--warning); }
+        .analysis-block.risk { background: #fef2f2; border-left-color: var(--negative); }
+        .analysis-block.recommendation { background: #f5f3ff; border-left-color: #8b5cf6; }
+        .analysis-block h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .analysis-block.fact h4 { color: var(--accent); }
+        .analysis-block.analysis h4 { color: var(--positive); }
+        .analysis-block.assumption h4 { color: var(--warning); }
+        .analysis-block.risk h4 { color: var(--negative); }
+        .analysis-block.recommendation h4 { color: #8b5cf6; }
+        .analysis-block p { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+
+        /* Action Plan Table */
+        .priority-high { color: var(--negative); font-weight: 700; }
+        .priority-medium { color: var(--warning); font-weight: 700; }
+        .priority-low { color: var(--positive); font-weight: 700; }
+
+        /* Tabs within page */
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .tab { padding: 10px 20px; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+        .tab:hover { color: var(--text-primary); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main { margin-left: 0; }
+            .kpi-grid { grid-template-columns: 1fr; }
+            .chart-grid { grid-template-columns: 1fr; }
+            .topbar { flex-direction: column; gap: 12px; align-items: stretch; }
+            .topbar-filters { flex-wrap: wrap; }
+        }
+
+        /* Utility */
+        .text-center { text-align: center; }
+        .mt-4 { margin-top: 16px; }
+        .mb-4 { margin-bottom: 16px; }
+        .font-mono { font-family: 'SF Mono', monospace; font-size: 13px; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: var(--bg-primary); color: var(--text-secondary); }
+
+        /* Heatmap placeholder */
+        .heatmap { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+        .heatmap-cell { aspect-ratio: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+        .heatmap-legend { display: flex; gap: 16px; margin-top: 12px; font-size: 12px; }
+        .heatmap-legend-item { display: flex; align-items: center; gap: 6px; }
+        .color-box { width: 16px; height: 16px; border-radius: 4px; }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>📊 Dashboard Kinerja Toko</h1>
+                <p>Executive Management View</p>
+            </div>
+            <nav class="nav">
+                <div class="nav-item active" onclick="showPage('executive')">
+                    <span class="nav-icon">🏢</span>
+                    <span>Executive Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="showPage('store-performance')">
+                    <span class="nav-icon">🏪</span>
+                    <span>Store Performance</span>
+                </div>
+                <div class="nav-item" onclick="showPage('productivity')">
+                    <span class="nav-icon">⚡</span>
+                    <span>Productivity & MP</span>
+                </div>
+                <div class="nav-item" onclick="showPage('store-detail')">
+                    <span class="nav-icon">🔍</span>
+                    <span>Store Detail</span>
+                </div>
+                <div class="nav-item" onclick="showPage('action-plan')">
+                    <span class="nav-icon">✅</span>
+                    <span>Action Plan</span>
+                </div>
+                <div class="nav-item" onclick="showPage('data-quality')">
+                    <span class="nav-icon">🛡️</span>
+                    <span>Data Quality</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div>
+                    <div class="topbar-title" id="page-title">Executive Dashboard</div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Periode: <span id="current-period">N/A — Data belum tersedia</span></div>
+                </div>
+                <div class="topbar-filters">
+                    <div class="filter-group">
+                        <label>Periode / Bulan</label>
+                        <select id="filter-period" onchange="applyFilters()">
+                            <option value="">Pilih Periode...</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Toko</label>
+                        <select id="filter-store" onchange="applyFilters()">
+                            <option value="">Semua Toko</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Area / Region</label>
+                        <select id="filter-area" onchange="applyFilters()">
+                            <option value="">Semua Area</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" onclick="resetFilters()" style="margin-top: 16px;">Reset Filter</button>
+                </div>
+            </header>
+
+            <div class="content">
+
+                <!-- DATA QUALITY WARNING -->
+                <div class="dq-banner" id="dq-banner">
+                    <span class="dq-icon">⚠️</span>
+                    <div class="dq-content">
+                        <h3>Data Quality Warning — Data Belum Tersedia</h3>
+                        <p>Dashboard ini belum memiliki data aktual. Silakan upload file data (Excel, PDF, Word, PowerPoint) untuk mengisi dashboard. Semua KPI, ranking, dan analisis akan ditampilkan setelah data berhasil diproses dan divalidasi.</p>
+                        <ul>
+                            <li>Status: <strong>Tidak ada data yang diupload</strong></li>
+                            <li>Validasi: <strong>Belum dilakukan</strong></li>
+                            <li>KPI yang tersedia: <strong>0 dari 7</strong> (Revenue, YoY, MP, Revenue/MP, Productivity, Cost, Margin)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ==================== PAGE 1: EXECUTIVE DASHBOARD ==================== -->
+                <div class="page active" id="page-executive">
+
+                    <!-- Executive Summary -->
+                    <div class="exec-summary">
+                        <h2>📋 Executive Summary</h2>
+                        <div class="exec-grid">
+                            <div class="exec-card">
+                                <h3>What is Happening?</h3>
+                                <p id="es-what">Data belum tersedia. Upload data untuk melihat ringkasan kondisi bisnis.</p>
+                            </div>
+                            <div class="exec-card">
+                                <h3>Why?</h3>
+                                <p id="es-why">Data belum tersedia. Analisis faktor utama memerlukan data Revenue, YoY, Manpower, dan Productivity.</p>
+                            </div>
+                            <div class="exec-card impact">
+                                <h3>Business Impact</h3>
+                                <p id="es-impact">Data belum tersedia. Dampak terhadap revenue, productivity, manpower, cost, dan margin belum dapat dihitung.</p>
+                            </div>
+                            <div class="exec-card priority">
+                                <h3>Priority</h3>
+                                <p id="es-priority">Data belum tersedia. Toko/area yang perlu diperhatikan terlebih dahulu belum dapat diidentifikasi.</p>
+                            </div>
+                            <div class="exec-card action">
+                                <h3>Next Action</h3>
+                                <p id="es-action">Upload data periode terbaru untuk mengaktifkan seluruh fitur dashboard dan rekomendasi tindakan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overall KPIs -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Overall Performance</div>
+                                <div class="section-subtitle">Ringkasan kinerja keseluruhan seluruh toko</div>
+                            </div>
+                        </div>
+                        <div class="kpi-grid">
+                            <div class="kpi-card">
+                                <div class="kpi-label">Total Revenue</div>
+                                <div class="kpi-value na" id="kpi-revenue">N/A</div>
+                                <div class="kpi-change neutral">Data tidak tersedia</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">YoY Growth</div>
+                                <div class="kpi-value na" id="kpi-yoy">N/A</div>
+                                <div class="kpi-change neutral">Data tidak tersedia</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Total Manpower</div>
+                                <div class="kpi-value na" id="kpi-mp">N/A</div>
+                                <div class="kpi-change neutral">Data tidak tersedia</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Revenue / MP</div>
+                                <div class="kpi-value na" id="kpi-rev-mp">N/A</div>
+                                <div class="kpi-change neutral">Data tidak tersedia</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Productivity</div>
+                                <div class="kpi-value na" id="kpi-productivity">N/A</div>
+                                <div class="kpi-change neutral">Data tidak tersedia</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Total Cost</div>
+                                <div class="kpi-value na" id="kpi-cost">N/A</div>
+                                <div class="kpi-change neutral">Data tidak tersedia</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Margin</div>
+                                <div class="kpi-value na" id="kpi-margin">N/A</div>
+                                <div class="kpi-change neutral">Data tidak tersedia</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Store Ranking -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Store Performance Ranking</div>
+                                <div class="section-subtitle">Peringkat toko berdasarkan berbagai sudut pandang</div>
+                            </div>
+                        </div>
+                        <div class="tabs">
+                            <div class="tab active" onclick="showRankingTab('revenue')">By Revenue</div>
+                            <div class="tab" onclick="showRankingTab('growth')">By Growth</div>
+                            <div class="tab" onclick="showRankingTab('efficiency')">By Revenue/MP</div>
+                            <div class="tab" onclick="showRankingTab('productivity')">By Productivity</div>
+                            <div class="tab" onclick="showRankingTab('concern')">By Concern Level</div>
+                        </div>
+                        <div class="tab-panel active" id="rank-revenue">
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Store</th>
+                                            <th>Revenue</th>
+                                            <th>YoY</th>
+                                            <th>MP</th>
+                                            <th>Revenue/MP</th>
+                                            <th>Productivity</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-ranking">
+                                        <tr>
+                                            <td colspan="8" class="text-center" style="padding: 40px; color: var(--text-muted);">
+                                                📂 Data belum tersedia. Upload file untuk melihat ranking toko.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-panel" id="rank-growth"><div class="chart-container">📈 Ranking by Growth — Data belum tersedia</div></div>
+                        <div class="tab-panel" id="rank-efficiency"><div class="chart-container">⚡ Ranking by Revenue/MP — Data belum tersedia</div></div>
+                        <div class="tab-panel" id="rank-productivity"><div class="chart-container">🎯 Ranking by Productivity — Data belum tersedia</div></div>
+                        <div class="tab-panel" id="rank-concern"><div class="chart-container">🚨 Ranking by Concern Level — Data belum tersedia</div></div>
+                    </div>
+
+                    <!-- Status Overview -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Store Status Overview</div>
+                                <div class="section-subtitle">Distribusi status kesehatan toko</div>
+                            </div>
+                        </div>
+                        <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+                            <div class="kpi-card" style="border-top: 4px solid var(--positive);">
+                                <div class="kpi-label">🟢 HEALTHY</div>
+                                <div class="kpi-value na" id="count-healthy">N/A</div>
+                                <div class="kpi-change neutral">Toko dengan performa sehat</div>
+                            </div>
+                            <div class="kpi-card" style="border-top: 4px solid var(--warning);">
+                                <div class="kpi-label">🟡 WATCH</div>
+                                <div class="kpi-value na" id="count-watch">N/A</div>
+                                <div class="kpi-change neutral">Toko yang perlu dipantau</div>
+                            </div>
+                            <div class="kpi-card" style="border-top: 4px solid var(--negative);">
+                                <div class="kpi-label">🔴 PROBLEM</div>
+                                <div class="kpi-value na" id="count-problem">N/A</div>
+                                <div class="kpi-change neutral">Toko dengan masalah kinerja</div>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="margin-top: 20px; height: 200px;">
+                            📊 Visualisasi distribusi status — Data belum tersedia
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PAGE 2: STORE PERFORMANCE ==================== -->
+                <div class="page" id="page-store-performance">
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Analisis Per Toko</div>
+                                <div class="section-subtitle">Revenue, Manpower, Efficiency, dan Trend</div>
+                            </div>
+                        </div>
+                        <div class="chart-grid">
+                            <div>
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Revenue Trend</div>
+                                <div class="chart-container">📈 Line Chart Revenue Trend — Data belum tersedia</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">YoY Growth Trend</div>
+                                <div class="chart-container">📉 Line Chart YoY Trend — Data belum tersedia</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Revenue vs Manpower Analysis</div>
+                                <div class="section-subtitle">Hubungan Revenue, MP, Revenue/MP, dan Productivity</div>
+                            </div>
+                        </div>
+                        <div style="background: var(--bg-primary); padding: 20px; border-radius: var(--radius-sm); margin-bottom: 20px;">
+                            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--text-secondary);">Kondisi yang Dianalisis:</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; font-size: 13px;">
+                                <div style="padding: 12px; background: white; border-radius: 8px; border-left: 3px solid var(--positive);">
+                                    <strong>A:</strong> Revenue ↑ + MP ↑ + Rev/MP ↑<br><span style="color: var(--text-secondary);">Ekspansi produktif</span>
+                                </div>
+                                <div style="padding: 12px; background: white; border-radius: 8px; border-left: 3px solid var(--warning);">
+                                    <strong>B:</strong> Revenue ↑ + MP ↑ + Rev/MP ↓<br><span style="color: var(--text-secondary);">Revenue tumbuh, efisiensi turun</span>
+                                </div>
+                                <div style="padding: 12px; background: white; border-radius: 8px; border-left: 3px solid var(--warning);">
+                                    <strong>C:</strong> Revenue ↓ + MP tetap<br><span style="color: var(--text-secondary);">Evaluasi produktivitas</span>
+                                </div>
+                                <div style="padding: 12px; background: white; border-radius: 8px; border-left: 3px solid var(--negative);">
+                                    <strong>D:</strong> Revenue ↓ + MP ↑<br><span style="color: var(--text-secondary);">Concern tinggi, evaluasi kapasitas</span>
+                                </div>
+                                <div style="padding: 12px; background: white; border-radius: 8px; border-left: 3px solid var(--positive);">
+                                    <strong>E:</strong> Revenue ↑ + MP ↓<br><span style="color: var(--text-secondary);">Produktivitas naik, cek operasional</span>
+                                </div>
+                                <div style="padding: 12px; background: white; border-radius: 8px; border-left: 3px solid var(--warning);">
+                                    <strong>F:</strong> Revenue ↓ + MP ↓<br><span style="color: var(--text-secondary);">Cek sebab-akibat penurunan</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="height: 400px;">
+                            🔗 Matriks Revenue vs MP Analysis — Data belum tersedia
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PAGE 3: PRODUCTIVITY & MANPOWER ==================== -->
+                <div class="page" id="page-productivity">
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Productivity & Manpower Visualization</div>
+                                <div class="section-subtitle">Scatter plot: Revenue vs MP vs Revenue/MP</div>
+                            </div>
+                        </div>
+                        <div class="chart-grid">
+                            <div>
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Revenue vs Manpower (Scatter)</div>
+                                <div class="chart-container" style="height: 400px;">
+                                    ⚫ Scatter Plot: Revenue vs MP — Data belum tersedia
+                                </div>
+                            </div>
+                            <div>
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Revenue/MP Distribution</div>
+                                <div class="chart-container" style="height: 400px;">
+                                    📊 Bar Chart Revenue/MP — Data belum tersedia
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; background: var(--bg-primary); padding: 20px; border-radius: var(--radius-sm);">
+                            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 12px;">Kuartil Interpretasi:</h4>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 13px;">
+                                <div style="padding: 12px; background: white; border-radius: 8px;">
+                                    <strong style="color: var(--positive);">Strong Performer:</strong> Revenue tinggi + Rev/MP tinggi
+                                </div>
+                                <div style="padding: 12px; background: white; border-radius: 8px;">
+                                    <strong style="color: var(--warning);">Volume besar, efisiensi concern:</strong> Revenue tinggi + Rev/MP rendah
+                                </div>
+                                <div style="padding: 12px; background: white; border-radius: 8px;">
+                                    <strong style="color: var(--accent);">Efisien tapi scale kecil:</strong> Revenue rendah + Rev/MP tinggi
+                                </div>
+                                <div style="padding: 12px; background: white; border-radius: 8px;">
+                                    <strong style="color: var(--negative);">Priority Concern:</strong> Revenue rendah + Rev/MP rendah
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Heatmap Perbandingan KPI</div>
+                                <div class="section-subtitle">Perbandingan seluruh toko dan indikator kunci</div>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="height: 400px;">
+                            🌡️ Heatmap: Store × KPI — Data belum tersedia
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PAGE 4: STORE DETAIL ==================== -->
+                <div class="page" id="page-store-detail">
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Store Detail View</div>
+                                <div class="section-subtitle">Klik pada toko di halaman Store Performance atau pilih di bawah</div>
+                            </div>
+                        </div>
+                        <div class="filter-group" style="margin-bottom: 20px; max-width: 400px;">
+                            <label>Pilih Toko</label>
+                            <select id="detail-store-select" onchange="loadStoreDetail(this.value)">
+                                <option value="">-- Pilih Toko --</option>
+                            </select>
+                        </div>
+
+                        <div id="store-detail-content">
+                            <div class="chart-container" style="height: 300px;">
+                                🔍 Pilih toko untuk melihat detail lengkap
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PAGE 5: ACTION PLAN ==================== -->
+                <div class="page" id="page-action-plan">
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Action Plan & Prioritas</div>
+                                <div class="section-subtitle">Rekomendasi tindakan berdasarkan analisis data</div>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Store</th>
+                                        <th>Main Issue</th>
+                                        <th>Evidence</th>
+                                        <th>Business Impact</th>
+                                        <th>Recommended Action</th>
+                                        <th>Priority</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-action">
+                                    <tr>
+                                        <td colspan="6" class="text-center" style="padding: 40px; color: var(--text-muted);">
+                                            📂 Data belum tersedia. Upload file untuk generate action plan otomatis.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top: 20px; padding: 16px; background: var(--bg-primary); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary);">
+                            <strong>Catatan:</strong> Rekomendasi akan dihasilkan berdasarkan kombinasi indikator (Revenue, YoY, MP, Productivity, Cost, Margin). Tidak akan ada rekomendasi generik seperti "tingkatkan penjualan" — setiap action akan spesifik sesuai kondisi toko.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PAGE 6: DATA QUALITY ==================== -->
+                <div class="page" id="page-data-quality">
+                    <div class="section">
+                        <div class="section-header">
+                            <div>
+                                <div class="section-title">Data Quality Report</div>
+                                <div class="section-subtitle">Validasi dan pengecekan data sebelum ditampilkan di dashboard</div>
+                            </div>
+                        </div>
+
+                        <div class="dq-banner negative" style="margin-bottom: 20px;">
+                            <span class="dq-icon">🚫</span>
+                            <div class="dq-content">
+                                <h3>Belum Ada Data</h3>
+                                <p>Tidak ada file data yang terdeteksi. Dashboard memerlukan data untuk melakukan validasi.</p>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                            <div class="detail-card">
+                                <h4>✅ Duplicate Store Check</h4>
+                                <div class="detail-row">
+                                    <span class="label">Status</span>
+                                    <span class="value na">Belum dicek</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Duplicate found</span>
+                                    <span class="value na">N/A</span>
+                                </div>
+                            </div>
+                            <div class="detail-card">
+                                <h4>✅ Missing Value Check</h4>
+                                <div class="detail-row">
+                                    <span class="label">Status</span>
+                                    <span class="value na">Belum dicek</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Missing Revenue</span>
+                                    <span class="value na">N/A</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Missing MP</span>
+                                    <span class="value na">N/A</span>
+                                </div>
+                            </div>
+                            <div class="detail-card">
+                                <h4>✅ Validity Check</h4>
+                                <div class="detail-row">
+                                    <span class="label">YoY Valid</span>
+                                    <span class="value na">N/A</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Negative Values</span>
+                                    <span class="value na">N/A</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Formula Errors</span>
+                                    <span class="value na">N/A</span>
+                                </div>
+                            </div>
+                            <div class="detail-card">
+                                <h4>✅ Cross-Document Check</h4>
+                                <div class="detail-row">
+                                    <span class="label">Discrepancy</span>
+                                    <span class="value na">N/A</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Sources compared</span>
+                                    <span class="value na">N/A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Store Detail Modal -->
+    <div class="modal-overlay" id="store-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-store-name">Detail Toko</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== NAVIGATION ====================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            event.currentTarget.classList.add('active');
+
+            const titles = {
+                'executive': 'Executive Dashboard',
+                'store-performance': 'Store Performance',
+                'productivity': 'Productivity & Manpower',
+                'store-detail': 'Store Detail',
+                'action-plan': 'Action Plan',
+                'data-quality': 'Data Quality'
+            };
+            document.getElementById('page-title').textContent = titles[pageId];
+        }
+
+        // ==================== TABS ====================
+        function showRankingTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('rank-' + tabId).classList.add('active');
+        }
+
+        // ==================== FILTERS ====================
+        function applyFilters() {
+            const period = document.getElementById('filter-period').value;
+            const store = document.getElementById('filter-store').value;
+            const area = document.getElementById('filter-area').value;
+
+            // In real implementation, this would filter the data and re-render
+            console.log('Filters applied:', { period, store, area });
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-period').value = '';
+            document.getElementById('filter-store').value = '';
+            document.getElementById('filter-area').value = '';
+            applyFilters();
+        }
+
+        // ==================== MODAL ====================
+        function openStoreModal(storeId) {
+            document.getElementById('store-modal').classList.add('active');
+            document.getElementById('modal-store-name').textContent = 'Detail Toko: ' + (storeId || 'N/A');
+            document.getElementById('modal-body').innerHTML = `
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <h4>Revenue</h4>
+                        <div class="detail-row"><span class="label">Current</span><span class="value na">N/A</span></div>
+                        <div class="detail-row"><span class="label">Previous</span><span class="value na">N/A</span></div>
+                        <div class="detail-row"><span class="label">YoY</span><span class="value na">N/A</span></div>
+                    </div>
+                    <div class="detail-card">
+                        <h4>Manpower</h4>
+                        <div class="detail-row"><span class="label">Jumlah MP</span><span class="value na">N/A</span></div>
+                        <div class="detail-row"><span class="label">Perubahan MP</span><span class="value na">N/A</span></div>
+                        <div class="detail-row"><span class="label">Revenue/MP</span><span class="value na">N/A</span></div>
+                    </div>
+                    <div class="detail-card">
+                        <h4>Efficiency</h4>
+                        <div class="detail-row"><span class="label">Productivity</span><span class="value na">N/A</span></div>
+                        <div class="detail-row"><span class="label">Cost</span><span class="value na">N/A</span></div>
+                        <div class="detail-row"><span class="label">Margin</span><span class="value na">N/A</span></div>
+                    </div>
+                </div>
+                <div class="analysis-block fact">
+                    <h4>📋 FACT</h4>
+                    <p>Data belum tersedia untuk toko ini. Upload data untuk melihat fakta kinerja.</p>
+                </div>
+                <div class="analysis-block analysis">
+                    <h4>🔍 ANALYSIS</h4>
+                    <p>Analisis belum dapat dilakukan karena data tidak tersedia.</p>
+                </div>
+                <div class="analysis-block assumption">
+                    <h4>⚠️ ASSUMPTION</h4>
+                    <p>Tidak ada asumsi yang dibuat. Dashboard hanya menampilkan data aktual.</p>
+                </div>
+                <div class="analysis-block risk">
+                    <h4>🚨 RISK / UNKNOWN</h4>
+                    <p>Risiko belum dapat diidentifikasi tanpa data.</p>
+                </div>
+                <div class="analysis-block recommendation">
+                    <h4>💡 RECOMMENDED ACTION</h4>
+                    <p>Upload data periode terbaru untuk mendapatkan rekomendasi spesifik.</p>
+                </div>
+            `;
+        }
+
+        function closeModal() {
+            document.getElementById('store-modal').classList.remove('active');
+        }
+
+        function loadStoreDetail(storeId) {
+            if (!storeId) return;
+            openStoreModal(storeId);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('store-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ==================== DATA INTEGRATION POINT ====================
+        /*
+        INSTRUKSI UNTUK INTEGRASI DATA:
+
+        Fungsi ini akan dipanggil setelah data berhasil diproses dari file upload.
+        Format data yang diharapkan:
+
+        window.dashboardData = {
+            period: "Januari 2026",
+            stores: [
+                {
+                    id: "P3",
+                    name: "Store P3",
+                    area: "Jakarta",
+                    revenue: 1500000000,
+                    revenue_prev: 1400000000,
+                    revenue_yoy: 7.1,
+                    mp: 25,
+                    mp_prev: 23,
+                    revenue_per_mp: 60000000,
+                    productivity: 85,
+                    cost: 1200000000,
+                    margin: 20,
+                    status: "healthy" | "watch" | "problem"
+                }
+            ],
+            overall: {
+                total_revenue: ..., total_yoy: ..., total_mp: ..., 
+                avg_rev_mp: ..., avg_productivity: ..., total_cost: ..., avg_margin: ...
+            },
+            quality: { duplicates: [], missing: [], discrepancies: [] }
+        };
+
+        Setelah data di-set, panggil: renderDashboard();
+        */
+
+        function renderDashboard() {
+            // This function will be implemented when data is available
+            // It will populate all tables, charts, KPIs, and analysis
+        }
+    </script>
+</body>
+</html>
