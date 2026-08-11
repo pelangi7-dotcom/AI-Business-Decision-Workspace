@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Kinerja Toko — Upload & Analyze</title>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <title>Dashboard Kinerja Toko — Juli 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -32,18 +31,11 @@
         .content { padding: 24px 28px; max-width: 1400px; }
         .page { display: none; }
         .page.active { display: block; }
-        .upload-area { border: 2px dashed var(--border); border-radius: var(--r); padding: 48px; text-align: center; background: var(--card); margin-bottom: 20px; transition: all 0.2s; }
-        .upload-area.dragover { border-color: var(--accent); background: var(--accent2); }
-        .upload-area h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-        .upload-area p { font-size: 13px; color: var(--text2); margin-bottom: 16px; }
-        .upload-btn { display: inline-block; padding: 10px 24px; background: var(--accent); color: white; border-radius: var(--r2); font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
-        .upload-btn:hover { background: #1d4ed8; }
-        .upload-hint { font-size: 11px; color: var(--text3); margin-top: 12px; }
-        #file-input { display: none; }
         .alert { border-radius: var(--r); padding: 14px 18px; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start; font-size: 13px; }
         .alert-warn { background: var(--warn2); border: 1px solid #fcd34d; }
         .alert-err { background: var(--neg2); border: 1px solid #fca5a5; }
         .alert-ok { background: var(--pos2); border: 1px solid #6ee7b7; }
+        .alert-info { background: #e0f2fe; border: 1px solid #7dd3fc; }
         .alert-icon { font-size: 18px; flex-shrink: 0; }
         .alert strong { font-weight: 600; }
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px; }
@@ -93,9 +85,10 @@
         .ab-rec h4 { color: #8b5cf6; }
         .chart-box { height: 280px; background: var(--bg); border-radius: var(--r2); border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; color: var(--text3); font-size: 13px; flex-direction: column; }
         .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; }
+        canvas { max-width: 100%; }
         .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; padding: 40px; }
         .modal-bg.active { display: flex; }
-        .modal { background: var(--card); border-radius: var(--r); width: 100%; max-width: 850px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow2); }
+        .modal { background: var(--card); border-radius: var(--r); width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow2); }
         .modal-h { padding: 20px 28px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .modal-h h3 { font-size: 18px; font-weight: 700; }
         .modal-close { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: none; cursor: pointer; font-size: 20px; color: var(--text2); display: flex; align-items: center; justify-content: center; }
@@ -114,6 +107,7 @@
         .cond-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; font-size: 12px; margin-bottom: 16px; }
         .cond-card { padding: 12px; background: var(--bg); border-radius: var(--r2); border-left: 3px solid; }
         .cond-card strong { font-size: 13px; }
+        .exec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 16px; }
         @media (max-width: 768px) {
             .sidebar { display: none; }
             .main { margin-left: 0; }
@@ -147,592 +141,639 @@
             <header class="topbar">
                 <div>
                     <h2 id="page-title">Executive Dashboard</h2>
-                    <p id="period-display">Periode: N/A — Upload file Excel/CSV untuk memulai</p>
+                    <p id="period-display">Periode: Juli 2026 | Sumber: Report_Kinerja_Toko_Manpower_2026.pptx</p>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
-                    <button class="upload-btn" onclick="document.getElementById('file-input').click()">📤 Upload Data Baru</button>
-                    <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="handleFileSelect(event)">
+                    <span class="tag">6 Unit | 49 MP</span>
                 </div>
             </header>
             <div class="content">
-                <div id="upload-section" class="upload-area">
-                    <h3>📂 Upload File Data Toko</h3>
-                    <p>Drag & drop file Excel (.xlsx) atau CSV ke sini, atau klik tombol di bawah</p>
-                    <button class="upload-btn" onclick="document.getElementById('file-input').click()">Pilih File</button>
-                    <div class="upload-hint">
-                        Format: .xlsx, .xls, .csv | Kolom: Store, Revenue, MP, YoY, Cost, Margin, Productivity, Area<br>
-                        <strong>Semua proses di browser — data tidak diupload ke server.</strong>
-                    </div>
-                </div>
-                <div id="dq-alert" class="alert alert-warn hidden">
-                    <span class="alert-icon">⚠️</span>
-                    <div id="dq-alert-text"></div>
-                </div>
+
+                <!-- EXECUTIVE PAGE -->
                 <div class="page active" id="page-executive">
-                    <div id="exec-summary" class="section hidden">
+                    <div class="alert alert-info">
+                        <span class="alert-icon">📊</span>
+                        <div><strong>Data Source:</strong> Report Kinerja Toko & Manpower 2026 (PPTX) | <strong>Periode:</strong> Jan–Jul 2026 (Toko Fisik), Jan–Jun 2026 (E-Commerce) | <strong>Generated:</strong> 11 Agustus 2026</div>
+                    </div>
+
+                    <div class="section">
                         <div class="section-h"><div><div class="section-title">Executive Summary</div><div class="section-sub">Ringkasan kondisi bisnis berdasarkan data aktual</div></div></div>
-                        <div class="cond-grid">
-                            <div class="ablock ab-fact" style="margin-bottom:0;"><h4>What is happening?</h4><p id="es-what">-</p></div>
-                            <div class="ablock ab-analysis" style="margin-bottom:0;"><h4>Why?</h4><p id="es-why">-</p></div>
-                            <div class="ablock ab-assumption" style="margin-bottom:0;"><h4>Business Impact</h4><p id="es-impact">-</p></div>
-                            <div class="ablock ab-risk" style="margin-bottom:0;"><h4>Priority</h4><p id="es-priority">-</p></div>
-                            <div class="ablock ab-rec" style="margin-bottom:0;"><h4>Next Action</h4><p id="es-action">-</p></div>
+                        <div class="exec-grid">
+                            <div class="ablock ab-fact" style="margin-bottom:0;"><h4>What is happening?</h4><p>Dari 6 unit (5 toko fisik + E-Commerce), 2 unit sehat (P4, P5), 3 unit perlu perhatian (P1, P2, P3), dan 1 unit kritis (EC). Total revenue Rp10,53 Miliar dengan 49 MP. Rata-rata YoY +1,4% — didorong oleh pertumbuhan kuat P4 (+34,2%) dan P5 (+15,9%), namun ditekan oleh penurunan drastis E-Commerce (-51,9%) dan perlambatan P2 (-6,2%) serta P3 (-6,5%).</p></div>
+                            <div class="ablock ab-analysis" style="margin-bottom:0;"><h4>Why?</h4><p>P4 dan P5 menunjukkan momentum positif dengan growth dan produktivitas yang seimbang. P3 memiliki produktivitas tertinggi (Rp54,3 jt/MP) tetapi mengalami deterioration sejak April. P2 mengalami penurunan signifikan di April (-33,5%) dan Juli (-23,7%). P1 tumbuh +23% YoY namun produktivitas per MP sangat rendah (Rp3,9 jt) karena status toko merangkap Warehouse. E-Commerce turun drastis dan data belum lengkap (baru sampai Juni).</p></div>
+                            <div class="ablock ab-assumption" style="margin-bottom:0;"><h4>Business Impact</h4><p>3 unit (50%) dalam status WATCH berpotensi menurunkan overall performance jika tidak ditindaklanjuti. E-Commerce sebagai unit digital mengalami kontraksi revenue yang signifikan (-51,9%), berisiko terhadap diversifikasi channel. P1 dengan produktivitas sangat rendah menunjukkan ineffisiensi operasional yang perlu segera diatasi. Total Rev/MP rata-rata Rp214,9 jt/7bln (Rp30,7 jt/bln) masih bervariasi ekstrem antar unit.</p></div>
+                            <div class="ablock ab-risk" style="margin-bottom:0;"><h4>Priority</h4><p><strong>HIGH:</strong> E-Commerce (critical, data incomplete, turun -51,9%). <strong>MEDIUM-HIGH:</strong> Pelangi 1 (produktivitas sangat rendah, volatilitas tinggi). <strong>MEDIUM:</strong> Pelangi 2 (deterioration April-Juli), Pelangi 3 (deterioration sejak April, produktivitas tertinggi jangan dirusak). <strong>LOW:</strong> Pelangi 4 & 5 (pertahankan momentum).</p></div>
+                            <div class="ablock ab-rec" style="margin-bottom:0;"><h4>Next Action</h4><p>1) Segera lengkapi data E-Commerce sampai Juli untuk apple-to-apple comparison. 2) Lakukan workload review di P1 (toko+warehouse). 3) Investigasi root cause penurunan P2 (April & Juli) dan P3 (sejak April). 4) Dokumentasikan best practice P4 untuk replikasi. 5) Jalankan Program 90 Hari: Validasi → Quick Wins → Uji Perbaikan → Stage-Gate. <strong>Tidak ada rightsizing sebelum bukti valid.</strong></p></div>
                         </div>
                     </div>
+
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Overall Performance</div><div class="section-sub">Ringkasan kinerja keseluruhan</div></div></div>
+                        <div class="section-h"><div><div class="section-title">Overall Performance</div><div class="section-sub">Ringkasan kinerja keseluruhan 6 unit (Jan–Jul 2026)</div></div></div>
                         <div class="kpi-grid">
-                            <div class="kpi-card"><div class="kpi-label">Total Revenue</div><div class="kpi-value na" id="kpi-revenue">N/A</div><div class="kpi-change neu" id="kpi-revenue-change">-</div></div>
-                            <div class="kpi-card"><div class="kpi-label">YoY Growth</div><div class="kpi-value na" id="kpi-yoy">N/A</div><div class="kpi-change neu" id="kpi-yoy-change">-</div></div>
-                            <div class="kpi-card"><div class="kpi-label">Total Manpower</div><div class="kpi-value na" id="kpi-mp">N/A</div><div class="kpi-change neu" id="kpi-mp-change">-</div></div>
-                            <div class="kpi-card"><div class="kpi-label">Revenue / MP</div><div class="kpi-value na" id="kpi-rev-mp">N/A</div><div class="kpi-change neu" id="kpi-rev-mp-change">-</div></div>
-                            <div class="kpi-card"><div class="kpi-label">Productivity</div><div class="kpi-value na" id="kpi-prod">N/A</div><div class="kpi-change neu" id="kpi-prod-change">-</div></div>
-                            <div class="kpi-card"><div class="kpi-label">Total Cost</div><div class="kpi-value na" id="kpi-cost">N/A</div><div class="kpi-change neu" id="kpi-cost-change">-</div></div>
-                            <div class="kpi-card"><div class="kpi-label">Margin</div><div class="kpi-value na" id="kpi-margin">N/A</div><div class="kpi-change neu" id="kpi-margin-change">-</div></div>
+                            <div class="kpi-card"><div class="kpi-label">Total Revenue (7mo)</div><div class="kpi-value">Rp10,53 M</div><div class="kpi-change pos">5 toko fisik + E-Commerce</div></div>
+                            <div class="kpi-card"><div class="kpi-label">Avg YoY Growth</div><div class="kpi-value">+1,4%</div><div class="kpi-change neu">Rata-rata 6 unit</div></div>
+                            <div class="kpi-card"><div class="kpi-label">Total Manpower</div><div class="kpi-value">49</div><div class="kpi-change neu">P1:8 P2:5 P3:15 P4:6 P5:9 EC:6</div></div>
+                            <div class="kpi-card"><div class="kpi-label">Rev / MP (7mo)</div><div class="kpi-value">Rp214,9 jt</div><div class="kpi-change neu">~Rp30,7 jt/bln</div></div>
+                            <div class="kpi-card"><div class="kpi-label">Rev / MP Monthly</div><div class="kpi-value">Rp30,7 jt</div><div class="kpi-change neu">Rata-rata per bulan</div></div>
+                            <div class="kpi-card"><div class="kpi-label">Monthly Revenue</div><div class="kpi-value">Rp1,51 M</div><div class="kpi-change pos">Rata-rata per bulan</div></div>
+                            <div class="kpi-card"><div class="kpi-label">Data Coverage</div><div class="kpi-value">7 Mo</div><div class="kpi-change neg">EC hanya 6 bulan</div></div>
                         </div>
                     </div>
+
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Store Status Overview</div><div class="section-sub">Distribusi status kesehatan toko</div></div></div>
+                        <div class="section-h"><div><div class="section-title">Store Status Overview</div><div class="section-sub">Distribusi status kesehatan unit</div></div></div>
                         <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
-                            <div class="kpi-card" style="border-top: 3px solid var(--pos);"><div class="kpi-label">Healthy</div><div class="kpi-value na" id="count-ok">N/A</div><div class="kpi-change neu">Toko dengan performa sehat</div></div>
-                            <div class="kpi-card" style="border-top: 3px solid var(--warn);"><div class="kpi-label">Watch</div><div class="kpi-value na" id="count-warn">N/A</div><div class="kpi-change neu">Toko yang perlu dipantau</div></div>
-                            <div class="kpi-card" style="border-top: 3px solid var(--neg);"><div class="kpi-label">Problem</div><div class="kpi-value na" id="count-err">N/A</div><div class="kpi-change neu">Toko dengan masalah kinerja</div></div>
+                            <div class="kpi-card" style="border-top: 3px solid var(--pos);"><div class="kpi-label">🟢 Healthy</div><div class="kpi-value">2</div><div class="kpi-change pos">P4 (Strong Growth), P5 (Best)</div></div>
+                            <div class="kpi-card" style="border-top: 3px solid var(--warn);"><div class="kpi-label">🟡 Watch</div><div class="kpi-value">3</div><div class="kpi-change warn">P1 (Low Prod), P2 (Down), P3 (Deterioration)</div></div>
+                            <div class="kpi-card" style="border-top: 3px solid var(--neg);"><div class="kpi-label">🔴 Problem</div><div class="kpi-value">1</div><div class="kpi-change neg">EC (-51,9% YoY, incomplete data)</div></div>
                         </div>
                     </div>
+
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Store Performance Ranking</div><div class="section-sub">Peringkat toko berdasarkan berbagai sudut pandang</div></div></div>
+                        <div class="section-h"><div><div class="section-title">Store Performance Ranking</div><div class="section-sub">Peringkat unit berdasarkan berbagai sudut pandang</div></div></div>
                         <div class="tabs">
                             <div class="tab active" onclick="showRankTab('revenue', this)">By Revenue</div>
                             <div class="tab" onclick="showRankTab('growth', this)">By Growth</div>
                             <div class="tab" onclick="showRankTab('efficiency', this)">By Rev/MP</div>
-                            <div class="tab" onclick="showRankTab('productivity', this)">By Productivity</div>
                             <div class="tab" onclick="showRankTab('concern', this)">By Concern</div>
                         </div>
                         <div class="tab-panel active" id="tp-revenue">
-                            <div class="table-wrap"><table><thead><tr><th>Rank</th><th>Store</th><th>Revenue</th><th>YoY</th><th>MP</th><th>Rev/MP</th><th>Productivity</th><th>Status</th></tr></thead><tbody id="tb-revenue"><tr><td colspan="8" class="empty">Upload file untuk melihat ranking</td></tr></tbody></table></div>
+                            <div class="table-wrap">
+                                <table>
+                                    <thead><tr><th>Rank</th><th>Store</th><th>Revenue (7mo)</th><th>Rev/Month</th><th>YoY</th><th>MP</th><th>Rev/MP (mo)</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr class="clickable" onclick="openModalByName('Pelangi 3')"><td>1</td><td><strong>Pelangi 3</strong></td><td>Rp5,70 M</td><td>Rp814,5 jt</td><td style="color:var(--neg)">-6,5%</td><td>15</td><td>Rp54,3 jt</td><td><span class="status st-warn"><span class="dot" style="background:var(--warn)"></span>Watch</span></td></tr>
+                                        <tr class="clickable" onclick="openModalByName('Pelangi 5')"><td>2</td><td><strong>Pelangi 5</strong></td><td>Rp2,05 M</td><td>Rp292,5 jt</td><td style="color:var(--pos)">+15,9%</td><td>9</td><td>Rp32,5 jt</td><td><span class="status st-ok"><span class="dot" style="background:var(--pos)"></span>Healthy</span></td></tr>
+                                        <tr class="clickable" onclick="openModalByName('Pelangi 4')"><td>3</td><td><strong>Pelangi 4</strong></td><td>Rp1,18 M</td><td>Rp168,6 jt</td><td style="color:var(--pos)">+34,2%</td><td>6</td><td>Rp28,1 jt</td><td><span class="status st-ok"><span class="dot" style="background:var(--pos)"></span>Healthy</span></td></tr>
+                                        <tr class="clickable" onclick="openModalByName('Pelangi 2')"><td>4</td><td><strong>Pelangi 2</strong></td><td>Rp1,05 M</td><td>Rp150,5 jt</td><td style="color:var(--neg)">-6,2%</td><td>5</td><td>Rp30,1 jt</td><td><span class="status st-warn"><span class="dot" style="background:var(--warn)"></span>Watch</span></td></tr>
+                                        <tr class="clickable" onclick="openModalByName('E-Commerce')"><td>5</td><td><strong>E-Commerce</strong></td><td>Rp331,2 jt*</td><td>Rp55,2 jt</td><td style="color:var(--neg)">-51,9%</td><td>6</td><td>Rp9,2 jt</td><td><span class="status st-err"><span class="dot" style="background:var(--neg)"></span>Problem</span></td></tr>
+                                        <tr class="clickable" onclick="openModalByName('Pelangi 1')"><td>6</td><td><strong>Pelangi 1</strong></td><td>Rp218,4 jt</td><td>Rp31,2 jt</td><td style="color:var(--pos)">+23,0%</td><td>8</td><td>Rp3,9 jt</td><td><span class="status st-warn"><span class="dot" style="background:var(--warn)"></span>Watch</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p style="font-size:11px; color:var(--text3); margin-top:8px;">* E-Commerce: data 6 bulan (Jan–Jun). Rev/MP untuk 6 unit toko fisik = Rp30,7 jt/bln; untuk semua 6 unit = Rp25,2 jt/bln.</p>
                         </div>
-                        <div class="tab-panel" id="tp-growth"><div class="table-wrap"><table><thead><tr><th>Rank</th><th>Store</th><th>YoY</th><th>Revenue</th><th>Status</th></tr></thead><tbody id="tb-growth"><tr><td colspan="5" class="empty">Upload file</td></tr></tbody></table></div></div>
-                        <div class="tab-panel" id="tp-efficiency"><div class="table-wrap"><table><thead><tr><th>Rank</th><th>Store</th><th>Rev/MP</th><th>Revenue</th><th>MP</th><th>Status</th></tr></thead><tbody id="tp-eff"><tr><td colspan="5" class="empty">Upload file</td></tr></tbody></table></div></div>
-                        <div class="tab-panel" id="tp-productivity"><div class="table-wrap"><table><thead><tr><th>Rank</th><th>Store</th><th>Productivity</th><th>Revenue</th><th>Status</th></tr></thead><tbody id="tb-prod"><tr><td colspan="5" class="empty">Upload file</td></tr></tbody></table></div></div>
-                        <div class="tab-panel" id="tp-concern"><div class="table-wrap"><table><thead><tr><th>Rank</th><th>Store</th><th>Issue</th><th>Revenue</th><th>YoY</th><th>Status</th></tr></thead><tbody id="tb-concern"><tr><td colspan="6" class="empty">Upload file</td></tr></tbody></table></div></div>
+                        <div class="tab-panel" id="tp-growth">
+                            <div class="table-wrap">
+                                <table><thead><tr><th>Rank</th><th>Store</th><th>YoY</th><th>Revenue (7mo)</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 4')"><td>1</td><td><strong>Pelangi 4</strong></td><td style="color:var(--pos); font-weight:700;">+34,2%</td><td>Rp1,18 M</td><td><span class="status st-ok">Healthy</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 1')"><td>2</td><td><strong>Pelangi 1</strong></td><td style="color:var(--pos); font-weight:700;">+23,0%</td><td>Rp218,4 jt</td><td><span class="status st-warn">Watch</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 5')"><td>3</td><td><strong>Pelangi 5</strong></td><td style="color:var(--pos); font-weight:700;">+15,9%</td><td>Rp2,05 M</td><td><span class="status st-ok">Healthy</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 2')"><td>4</td><td><strong>Pelangi 2</strong></td><td style="color:var(--neg); font-weight:700;">-6,2%</td><td>Rp1,05 M</td><td><span class="status st-warn">Watch</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 3')"><td>5</td><td><strong>Pelangi 3</strong></td><td style="color:var(--neg); font-weight:700;">-6,5%</td><td>Rp5,70 M</td><td><span class="status st-warn">Watch</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('E-Commerce')"><td>6</td><td><strong>E-Commerce</strong></td><td style="color:var(--neg); font-weight:700;">-51,9%</td><td>Rp331,2 jt*</td><td><span class="status st-err">Problem</span></td></tr>
+                                </tbody>
+                                </table>
+                            </div>
+                            <p style="font-size:11px; color:var(--text3); margin-top:8px;">* E-Commerce data 6 bulan. Perlu data Juli untuk perbandingan apple-to-apple.</p>
+                        </div>
+                        <div class="tab-panel" id="tp-efficiency">
+                            <div class="table-wrap">
+                                <table><thead><tr><th>Rank</th><th>Store</th><th>Rev/MP (mo)</th><th>Revenue (7mo)</th><th>MP</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 3')"><td>1</td><td><strong>Pelangi 3</strong></td><td style="color:var(--pos); font-weight:700;">Rp54,3 jt</td><td>Rp5,70 M</td><td>15</td><td><span class="status st-warn">Watch</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 5')"><td>2</td><td><strong>Pelangi 5</strong></td><td style="color:var(--pos); font-weight:700;">Rp32,5 jt</td><td>Rp2,05 M</td><td>9</td><td><span class="status st-ok">Healthy</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 2')"><td>3</td><td><strong>Pelangi 2</strong></td><td style="font-weight:700;">Rp30,1 jt</td><td>Rp1,05 M</td><td>5</td><td><span class="status st-warn">Watch</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 4')"><td>4</td><td><strong>Pelangi 4</strong></td><td style="font-weight:700;">Rp28,1 jt</td><td>Rp1,18 M</td><td>6</td><td><span class="status st-ok">Healthy</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('E-Commerce')"><td>5</td><td><strong>E-Commerce</strong></td><td style="color:var(--neg); font-weight:700;">Rp9,2 jt</td><td>Rp331,2 jt*</td><td>6</td><td><span class="status st-err">Problem</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 1')"><td>6</td><td><strong>Pelangi 1</strong></td><td style="color:var(--neg); font-weight:700;">Rp3,9 jt</td><td>Rp218,4 jt</td><td>8</td><td><span class="status st-warn">Watch</span></td></tr>
+                                </tbody>
+                                </table>
+                            </div>
+                            <p style="font-size:11px; color:var(--text3); margin-top:8px;">* E-Commerce data 6 bulan. P1: status toko merangkap Warehouse.</p>
+                        </div>
+                        <div class="tab-panel" id="tp-concern">
+                            <div class="table-wrap">
+                                <table><thead><tr><th>Rank</th><th>Store</th><th>Issue</th><th>Revenue (7mo)</th><th>YoY</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr class="clickable" onclick="openModalByName('E-Commerce')"><td>1</td><td><strong>E-Commerce</strong></td><td>YoY -51,9%, data incomplete</td><td>Rp331,2 jt*</td><td style="color:var(--neg)">-51,9%</td><td><span class="status st-err">Problem</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 1')"><td>2</td><td><strong>Pelangi 1</strong></td><td>Rev/MP sangat rendah, volatil</td><td>Rp218,4 jt</td><td style="color:var(--pos)">+23,0%</td><td><span class="status st-warn">Watch</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 2')"><td>3</td><td><strong>Pelangi 2</strong></td><td>Penurunan Apr (-33,5%) & Jul (-23,7%)</td><td>Rp1,05 M</td><td style="color:var(--neg)">-6,2%</td><td><span class="status st-warn">Watch</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 3')"><td>4</td><td><strong>Pelangi 3</strong></td><td>Deterioration sejak April</td><td>Rp5,70 M</td><td style="color:var(--neg)">-6,5%</td><td><span class="status st-warn">Watch</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 4')"><td>5</td><td><strong>Pelangi 4</strong></td><td>Output/MP masih di bawah P2 & P5</td><td>Rp1,18 M</td><td style="color:var(--pos)">+34,2%</td><td><span class="status st-ok">Healthy</span></td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 5')"><td>6</td><td><strong>Pelangi 5</strong></td><td>Relatif paling sehat</td><td>Rp2,05 M</td><td style="color:var(--pos)">+15,9%</td><td><span class="status st-ok">Healthy</span></td></tr>
+                                </tbody>
+                                </table>
+                            </div>
+                            <p style="font-size:11px; color:var(--text3); margin-top:8px;">* E-Commerce data 6 bulan.</p>
+                        </div>
                     </div>
                 </div>
+
+                <!-- STORES PAGE -->
                 <div class="page" id="page-stores">
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Revenue vs Manpower Analysis</div><div class="section-sub">Hubungan Revenue, MP, Revenue/MP, dan Productivity</div></div></div>
+                        <div class="section-h"><div><div class="section-title">Revenue vs Manpower Analysis</div><div class="section-sub">Hubungan Revenue, MP, Revenue/MP, dan YoY — Kondisi A-F</div></div></div>
                         <div class="cond-grid">
-                            <div class="cond-card" style="border-left-color: var(--pos);"><strong style="color:var(--pos);">A:</strong> Rev + MP + Rev/MP<br><span style="color:var(--text2);">Ekspansi produktif</span></div>
-                            <div class="cond-card" style="border-left-color: var(--warn);"><strong style="color:var(--warn);">B:</strong> Rev + MP + Rev/MP down<br><span style="color:var(--text2);">Revenue tumbuh, efisiensi turun</span></div>
-                            <div class="cond-card" style="border-left-color: var(--warn);"><strong style="color:var(--warn);">C:</strong> Rev down + MP flat<br><span style="color:var(--text2);">Evaluasi produktivitas</span></div>
-                            <div class="cond-card" style="border-left-color: var(--neg);"><strong style="color:var(--neg);">D:</strong> Rev down + MP up<br><span style="color:var(--text2);">Concern tinggi, evaluasi kapasitas</span></div>
-                            <div class="cond-card" style="border-left-color: var(--pos);"><strong style="color:var(--pos);">E:</strong> Rev up + MP down<br><span style="color:var(--text2);">Produktivitas naik, cek operasional</span></div>
-                            <div class="cond-card" style="border-left-color: var(--warn);"><strong style="color:var(--warn);">F:</strong> Rev down + MP down<br><span style="color:var(--text2);">Cek sebab-akibat penurunan</span></div>
+                            <div class="cond-card" style="border-left-color: var(--pos);"><strong style="color:var(--pos);">A: Ekspansi Produktif</strong><br>Rev ↑ + MP ↑ + Rev/MP ↑<br><span style="color:var(--text2);">P4, P5 — Growth positif dengan efisiensi meningkat</span></div>
+                            <div class="cond-card" style="border-left-color: var(--warn);"><strong style="color:var(--warn);">B: Growth tapi Efisiensi Turun</strong><br>Rev ↑ + MP ↑ + Rev/MP ↓<br><span style="color:var(--text2);">Tidak ada unit di kondisi ini</span></div>
+                            <div class="cond-card" style="border-left-color: var(--warn);"><strong style="color:var(--warn);">C: Evaluasi Produktivitas</strong><br>Rev ↓ + MP tetap<br><span style="color:var(--text2);">P2 (-6,2%), P3 (-6,5%) — Revenue turun, MP tidak berkurang</span></div>
+                            <div class="cond-card" style="border-left-color: var(--neg);"><strong style="color:var(--neg);">D: Concern Tinggi</strong><br>Rev ↓ + MP ↑<br><span style="color:var(--text2);">Tidak ada unit di kondisi ini (MP tidak naik)</span></div>
+                            <div class="cond-card" style="border-left-color: var(--pos);"><strong style="color:var(--pos);">E: Produktivitas Naik</strong><br>Rev ↑ + MP ↓<br><span style="color:var(--text2);">Tidak ada unit di kondisi ini (MP tidak turun)</span></div>
+                            <div class="cond-card" style="border-left-color: var(--warn);"><strong style="color:var(--warn);">F: Cek Sebab-Akibat</strong><br>Rev ↓ + MP ↓<br><span style="color:var(--text2);">Tidak ada unit di kondisi ini</span></div>
                         </div>
-                        <div class="chart-box" id="chart-conditions" style="height: 320px;"><div>Matriks Kondisi Revenue vs MP<br><span style="font-size:11px;">Upload data untuk analisis</span></div></div>
+                        <div style="background: var(--bg); padding: 16px; border-radius: var(--r2); margin-bottom: 16px; font-size: 13px; color: var(--text2);">
+                            <strong>Catatan Analisis:</strong> Semua unit mempertahankan jumlah MP saat ini (tidak ada penambahan/pengurangan). Kondisi yang dominan adalah <strong>A (P4, P5)</strong> untuk unit sehat dan <strong>C (P2, P3)</strong> untuk unit yang mengalami perlambatan. P1 berada di kondisi unik: growth positif (+23%) tetapi Rev/MP sangat rendah karena fungsi ganda (toko + warehouse). E-Commerce berada di kondisi kritis dengan penurunan drastis (-51,9%) namun data belum lengkap (6 bulan vs 7 bulan).
+                        </div>
+                        <div class="chart-box" id="chart-conditions" style="height: 340px;">
+                            <canvas id="canvas-conditions" width="800" height="340"></canvas>
+                        </div>
                     </div>
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Store List & Condition</div><div class="section-sub">Kondisi masing-masing toko</div></div></div>
+                        <div class="section-h"><div><div class="section-title">Store List & Condition Matrix</div><div class="section-sub">Kondisi masing-masing unit berdasarkan matriks Revenue vs MP</div></div></div>
                         <div class="table-wrap">
-                            <table><thead><tr><th>Store</th><th>Revenue</th><th>MP</th><th>Rev/MP</th><th>Condition</th><th>Interpretation</th></tr></thead>
-                            <tbody id="tb-conditions"><tr><td colspan="6" class="empty">Upload data</td></tr></tbody>
+                            <table>
+                                <thead><tr><th>Store</th><th>Revenue (7mo)</th><th>MP</th><th>Rev/MP (mo)</th><th>YoY</th><th>Condition</th><th>Interpretation</th></tr></thead>
+                                <tbody>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 4')"><td><strong>Pelangi 4</strong></td><td>Rp1,18 M</td><td>6</td><td>Rp28,1 jt</td><td style="color:var(--pos)">+34,2%</td><td><span style="color:var(--pos); font-weight:700;">A</span></td><td>Ekspansi produktif — growth kuat, efisiensi meningkat</td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 5')"><td><strong>Pelangi 5</strong></td><td>Rp2,05 M</td><td>9</td><td>Rp32,5 jt</td><td style="color:var(--pos)">+15,9%</td><td><span style="color:var(--pos); font-weight:700;">A</span></td><td>Ekspansi produktif — growth & produktivitas sehat</td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 2')"><td><strong>Pelangi 2</strong></td><td>Rp1,05 M</td><td>5</td><td>Rp30,1 jt</td><td style="color:var(--neg)">-6,2%</td><td><span style="color:var(--warn); font-weight:700;">C</span></td><td>Evaluasi produktivitas — revenue turun, MP tetap</td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 3')"><td><strong>Pelangi 3</strong></td><td>Rp5,70 M</td><td>15</td><td>Rp54,3 jt</td><td style="color:var(--neg)">-6,5%</td><td><span style="color:var(--warn); font-weight:700;">C</span></td><td>Evaluasi produktivitas — deterioration sejak April</td></tr>
+                                    <tr class="clickable" onclick="openModalByName('Pelangi 1')"><td><strong>Pelangi 1</strong></td><td>Rp218,4 jt</td><td>8</td><td>Rp3,9 jt</td><td style="color:var(--pos)">+23,0%</td><td><span style="color:var(--warn); font-weight:700;">B*</span></td><td>Growth positif tapi Rev/MP sangat rendah (toko+warehouse)</td></tr>
+                                    <tr class="clickable" onclick="openModalByName('E-Commerce')"><td><strong>E-Commerce</strong></td><td>Rp331,2 jt*</td><td>6</td><td>Rp9,2 jt</td><td style="color:var(--neg)">-51,9%</td><td><span style="color:var(--neg); font-weight:700;">C*</span></td><td>Critical — revenue turun drastis, data incomplete</td></tr>
+                                </tbody>
                             </table>
                         </div>
+                        <p style="font-size:11px; color:var(--text3); margin-top:8px;">* B* = Kondisi unik P1 (growth+ tapi Rev/MP rendah karena fungsi ganda). C* = EC kondisi kritis dengan data 6 bulan.</p>
                     </div>
                 </div>
+
+                <!-- PRODUCTIVITY PAGE -->
                 <div class="page" id="page-productivity">
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Productivity & Manpower</div><div class="section-sub">Scatter plot dan distribusi Revenue/MP</div></div></div>
+                        <div class="section-h"><div><div class="section-title">Productivity & Manpower</div><div class="section-sub">Scatter plot Revenue vs MP dan distribusi Revenue/MP</div></div></div>
                         <div class="chart-grid">
-                            <div><div style="font-size:13px; font-weight:600; margin-bottom:8px;">Revenue vs Manpower</div><div class="chart-box" id="chart-scatter" style="height:300px;"><div>Scatter Plot<br><span style="font-size:11px;">Upload data</span></div></div></div>
-                            <div><div style="font-size:13px; font-weight:600; margin-bottom:8px;">Revenue/MP Distribution</div><div class="chart-box" id="chart-revmp" style="height:300px;"><div>Bar Chart<br><span style="font-size:11px;">Upload data</span></div></div></div>
+                            <div>
+                                <div style="font-size:13px; font-weight:600; margin-bottom:8px;">Revenue vs Manpower (Scatter)</div>
+                                <div class="chart-box" id="chart-scatter" style="height:320px;">
+                                    <canvas id="canvas-scatter" width="500" height="320"></canvas>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="font-size:13px; font-weight:600; margin-bottom:8px;">Revenue/MP Distribution (Bar)</div>
+                                <div class="chart-box" id="chart-revmp" style="height:320px;">
+                                    <canvas id="canvas-revmp" width="500" height="320"></canvas>
+                                </div>
+                            </div>
                         </div>
                         <div class="cond-grid mt-4">
-                            <div class="cond-card" style="border-left-color: var(--pos);"><strong style="color:var(--pos);">Strong Performer:</strong> Revenue tinggi + Rev/MP tinggi</div>
-                            <div class="cond-card" style="border-left-color: var(--warn);"><strong style="color:var(--warn);">Volume besar, efisiensi concern:</strong> Revenue tinggi + Rev/MP rendah</div>
-                            <div class="cond-card" style="border-left-color: var(--accent);"><strong style="color:var(--accent);">Efisien tapi scale kecil:</strong> Revenue rendah + Rev/MP tinggi</div>
-                            <div class="cond-card" style="border-left-color: var(--neg);"><strong style="color:var(--neg);">Priority Concern:</strong> Revenue rendah + Rev/MP rendah</div>
+                            <div class="cond-card" style="border-left-color: var(--pos);"><strong style="color:var(--pos);">Strong Performer:</strong><br>P3 (Rp54,3 jt) — Revenue tinggi + Rev/MP tertinggi. P5 (Rp32,5 jt) — Revenue tinggi + Rev/MP kuat.</div>
+                            <div class="cond-card" style="border-left-color: var(--warn);"><strong style="color:var(--warn);">Volume besar, efisiensi concern:</strong><br>P1 (Rp3,9 jt) — Revenue rendah + Rev/MP sangat rendah. EC (Rp9,2 jt) — Revenue rendah + Rev/MP rendah.</div>
+                            <div class="cond-card" style="border-left-color: var(--accent);"><strong style="color:var(--accent);">Efisien tapi scale kecil:</strong><br>P2 (Rp30,1 jt), P4 (Rp28,1 jt) — Rev/MP cukup dengan scale menengah.</div>
+                            <div class="cond-card" style="border-left-color: var(--neg);"><strong style="color:var(--neg);">Priority Concern:</strong><br>P1 & EC — perlu intervensi segera. P1 karena fungsi ganda, EC karena penurunan drastis.</div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="section-h"><div><div class="section-title">Productivity Comparison</div><div class="section-sub">Revenue per MP per bulan — benchmark antar unit</div></div></div>
+                        <div class="chart-box" id="chart-prod-compare" style="height: 300px;">
+                            <canvas id="canvas-prod" width="800" height="300"></canvas>
+                        </div>
+                        <div style="margin-top:12px; padding:12px; background:var(--bg); border-radius:var(--r2); font-size:12px; color:var(--text2);">
+                            <strong>Benchmark:</strong> Rata-rata Rev/MP per bulan (5 toko fisik) = <strong>Rp30,7 jt</strong>. P3 (Rp54,3 jt) 77% di atas rata-rata. P1 (Rp3,9 jt) 87% di bawah rata-rata. E-Commerce (Rp9,2 jt) 70% di bawah rata-rata toko fisik. <strong>Rekomendasi:</strong> Jangan gunakan rata-rata sebagai target untuk semua unit — P1 memiliki fungsi ganda (toko+warehouse) sehingga benchmark-nya berbeda.
                         </div>
                     </div>
                 </div>
+
+                <!-- DETAIL PAGE -->
                 <div class="page" id="page-detail">
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Store Detail View</div><div class="section-sub">Pilih toko untuk melihat detail lengkap</div></div></div>
+                        <div class="section-h"><div><div class="section-title">Store Detail View</div><div class="section-sub">Pilih unit untuk melihat detail lengkap dengan analisis FACT → ANALYSIS → RISK → ACTION</div></div></div>
                         <div style="max-width: 320px; margin-bottom: 16px;">
-                            <label style="font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase;">Pilih Toko</label>
+                            <label style="font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase;">Pilih Unit</label>
                             <select id="detail-select" onchange="loadStoreDetail(this.value)" style="width:100%; padding:8px 12px; margin-top:4px; border:1px solid var(--border); border-radius:var(--r2); font-size:13px;">
-                                <option value="">-- Pilih Toko --</option>
+                                <option value="">-- Pilih Unit --</option>
+                                <option value="Pelangi 1">Pelangi 1 (P1)</option>
+                                <option value="Pelangi 2">Pelangi 2 (P2)</option>
+                                <option value="Pelangi 3">Pelangi 3 (P3)</option>
+                                <option value="Pelangi 4">Pelangi 4 (P4)</option>
+                                <option value="Pelangi 5">Pelangi 5 (P5)</option>
+                                <option value="E-Commerce">E-Commerce (EC)</option>
                             </select>
                         </div>
                         <div id="detail-content">
-                            <div class="chart-box" style="height: 200px;"><div>Pilih toko untuk melihat detail</div></div>
+                            <div class="chart-box" style="height: 200px;"><div>Pilih unit untuk melihat detail lengkap</div></div>
                         </div>
                     </div>
                 </div>
+
+                <!-- ACTION PLAN PAGE -->
                 <div class="page" id="page-action">
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Action Plan & Prioritas</div><div class="section-sub">Rekomendasi tindakan berdasarkan analisis data</div></div></div>
+                        <div class="section-h"><div><div class="section-title">Action Plan & Prioritas</div><div class="section-sub">Rekomendasi tindakan berdasarkan analisis data — Program 90 Hari</div></div></div>
+                        <div class="alert alert-info" style="margin-bottom:16px;">
+                            <span class="alert-icon">📋</span>
+                            <div><strong>Prinsip Keputusan:</strong> Tidak ada pengurangan maupun penambahan manpower langsung hanya berdasarkan revenue/MP. Keputusan harus melalui validasi HR, aspek legal, workload, dan critical process.</div>
+                        </div>
                         <div class="table-wrap">
-                            <table><thead><tr><th>Store</th><th>Main Issue</th><th>Evidence</th><th>Business Impact</th><th>Recommended Action</th><th>Priority</th></tr></thead>
-                            <tbody id="tb-action"><tr><td colspan="6" class="empty">Upload data untuk generate action plan</td></tr></tbody>
+                            <table>
+                                <thead><tr><th>Store</th><th>Main Issue</th><th>Evidence</th><th>Business Impact</th><th>Recommended Action</th><th>Priority</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>E-Commerce</strong></td>
+                                        <td>Revenue turun drastis (-51,9%), data incomplete (6 bulan)</td>
+                                        <td>YoY -51,9%, Rev/MP Rp9,2 jt (terendah), data baru sampai Juni</td>
+                                        <td>Risiko signifikan terhadap diversifikasi channel digital. Kontraksi revenue bisa mengurangi market share online.</td>
+                                        <td>1) Segera lengkapi data Juli. 2) Bedah funnel: traffic→conversion→orders→AOV. 3) Petakan workload per MP. 4) Review response time, cancellation, fulfillment SLA. <strong>Jangan rightsizing sebelum data lengkap.</strong></td>
+                                        <td class="pri-high">HIGH</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Pelangi 1</strong></td>
+                                        <td>Produktivitas/MP sangat rendah (Rp3,9 jt), volatilitas tinggi</td>
+                                        <td>Rev/MP 87% di bawah rata-rata, Jan -52% Apr +154%, status toko+warehouse</td>
+                                        <td>Ineffisiensi operasional yang signifikan. Fungsi ganda (toko+warehouse) menyebabkan Rev/MP tidak comparable.</td>
+                                        <td>1) <strong>Workload review wajib</strong> — bedah aktivitas/MP, job mapping, roster. 2) Pisahkan tracking warehouse vs toko. 3) Jadikan April (peak +154%) sebagai case study. 4) Pertahankan 8 MP sementara. <strong>Jangan kurangi MP tanpa evidence workload berlebih.</strong></td>
+                                        <td class="pri-high">HIGH</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Pelangi 2</strong></td>
+                                        <td>YoY turun -6,2%, penurunan signifikan Apr & Jul</td>
+                                        <td>Apr -33,5%, Jul -23,7%, Rev/MP Rp30,1 jt (cukup)</td>
+                                        <td>Deterioration momentum bisa berlanjut ke Q4. Risiko turunnya confidence tim sales.</td>
+                                        <td>1) Investigasi root cause April & Juli — cek stok, conversion, product mix, basket size. 2) Fokus sales execution & coaching. 3) Pertahankan 5 MP (bukan masalah shortage). 4) Target quick wins: transaksi, basket, conversion.</td>
+                                        <td class="pri-med">MEDIUM</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Pelangi 3</strong></td>
+                                        <td>Deterioration sejak April, YoY -6,5% meski Rev/MP tertinggi</td>
+                                        <td>Rev/MP Rp54,3 jt (#1), YoY -6,5%, deterioration sejak April</td>
+                                        <td>Produktivitas tertinggi berisiko turun jika coverage jam ramai terganggu. Revenue besar (Rp5,7 M) berarti dampak signifikan.</td>
+                                        <td>1) <strong>Pertahankan 15 MP</strong> — jangan rusak sales coverage. 2) Bedah kontribusi Mebel vs Pecah Belah. 3) Lindungi coverage jam ramai. 4) Identifikasi penyebab deterioration sejak April (stok? kompetisi? seasonality?).</td>
+                                        <td class="pri-med">MEDIUM</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Pelangi 4</strong></td>
+                                        <td>Output/MP masih di bawah P2 & P5 meski growth tertinggi</td>
+                                        <td>YoY +34,2% (tertinggi), Rev/MP Rp28,1 jt (di bawah P2 Rp30,1 & P5 Rp32,5)</td>
+                                        <td>Gap antara growth dan output/MP menunjukkan potensi efisiensi yang belum tergarap. Best practice belum didokumentasikan.</td>
+                                        <td>1) Dokumentasikan driver growth sebagai best practice. 2) Cari gap growth vs output/MP — optimalkan output per orang. 3) Pertahankan 6 MP. 4) Replikasi driver growth ke unit lain.</td>
+                                        <td class="pri-low">LOW</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Pelangi 5</strong></td>
+                                        <td>Relatif paling sehat, gap target masih bisa ditutup via produktivitas</td>
+                                        <td>YoY +15,9%, Rev/MP Rp32,5 jt, paling balanced</td>
+                                        <td>Unit benchmark. Risiko rendah. Potensi menjadi role model untuk unit lain.</td>
+                                        <td>1) Naikkan output per orang untuk tutup gap target. 2) Scale disiplin operasional. 3) Pertahankan 9 MP — jangan tambah MP, naikkan produktivitas. 4) Gunakan sebagai benchmark untuk P2 & P4.</td>
+                                        <td class="pri-low">LOW</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
-                        <div style="margin-top:14px; padding:12px; background:var(--bg); border-radius:var(--r2); font-size:12px; color:var(--text2);">
-                            <strong>Catatan:</strong> Rekomendasi dihasilkan berdasarkan kombinasi indikator. Tidak ada rekomendasi generik.
+                        <div style="margin-top:16px; padding:14px; background:var(--bg); border-radius:var(--r2); font-size:13px; color:var(--text2);">
+                            <strong style="color:var(--text)">Program 90 Hari — Timeline:</strong><br><br>
+                            <strong>Hari 1–14:</strong> Validasi Data & Workload — Data Jan–Jul seragam, job mapping, roster, aktivitas/MP, critical process. <strong>Belum ada PHK / tambah MP.</strong><br><br>
+                            <strong>Hari 15–30:</strong> Quick Wins Commercial — Target transaksi/basket/conversion; perbaikan stok & execution. <strong>Maintain sambil ukur dampak.</strong><br><br>
+                            <strong>Hari 31–60:</strong> Uji Perbaikan — Dashboard mingguan, coaching, eksperimen E-Commerce, review peak coverage. <strong>Lanjut / koreksi / redistribusi tugas.</strong><br><br>
+                            <strong>Hari 61–90:</strong> Stage-Gate — Hasil vs baseline, utilization, service risk, biaya tenaga kerja. <strong>Decide: Maintain / mutasi-redistribusi / rightsizing bertahap.</strong>
                         </div>
                     </div>
                 </div>
+
+                <!-- DATA QUALITY PAGE -->
                 <div class="page" id="page-quality">
                     <div class="section">
-                        <div class="section-h"><div><div class="section-title">Data Quality Report</div><div class="section-sub">Validasi dan pengecekan data</div></div></div>
-                        <div id="dq-content">
-                            <div class="alert alert-warn"><span class="alert-icon">🚫</span><div><strong>Belum Ada Data</strong><br>Upload file untuk melakukan validasi.</div></div>
+                        <div class="section-h"><div><div class="section-title">Data Quality Report</div><div class="section-sub">Validasi dan pengecekan data dari sumber PPTX</div></div></div>
+                        <div class="alert alert-ok">
+                            <span class="alert-icon">✅</span>
+                            <div><strong>Data Quality: OK</strong><br>Tidak ditemukan masalah signifikan pada data. Namun terdapat beberapa catatan penting yang perlu diperhatikan management.</div>
+                        </div>
+                        <div class="detail-grid">
+                            <div class="detail-card">
+                                <h4>✅ Duplicate Store Check</h4>
+                                <div class="drow"><span class="l">Status</span><span class="v" style="color:var(--pos)">PASS</span></div>
+                                <div class="drow"><span class="l">Duplicate found</span><span class="v">0</span></div>
+                                <div class="drow"><span class="l">Total units</span><span class="v">6 (P1-P5 + EC)</span></div>
+                            </div>
+                            <div class="detail-card">
+                                <h4>⚠️ Missing Value Check</h4>
+                                <div class="drow"><span class="l">Status</span><span class="v" style="color:var(--warn)">WARNING</span></div>
+                                <div class="drow"><span class="l">Missing Revenue</span><span class="v">0</span></div>
+                                <div class="drow"><span class="l">Missing MP</span><span class="v">0</span></div>
+                                <div class="drow"><span class="l">Missing YoY</span><span class="v">0</span></div>
+                                <div class="drow"><span class="l">Missing Period</span><span class="v" style="color:var(--warn)">E-Commerce hanya 6 bulan (Jan–Jun)</span></div>
+                            </div>
+                            <div class="detail-card">
+                                <h4>✅ Validity Check</h4>
+                                <div class="drow"><span class="l">YoY Valid</span><span class="v" style="color:var(--pos)">6/6 OK</span></div>
+                                <div class="drow"><span class="l">Negative Values</span><span class="v" style="color:var(--pos)">0</span></div>
+                                <div class="drow"><span class="l">Formula Errors</span><span class="v" style="color:var(--pos)">0</span></div>
+                                <div class="drow"><span class="l">MP = 0</span><span class="v" style="color:var(--pos)">0</span></div>
+                            </div>
+                            <div class="detail-card">
+                                <h4>⚠️ Cross-Document Check</h4>
+                                <div class="drow"><span class="l">Discrepancy</span><span class="v" style="color:var(--warn)">FOUND</span></div>
+                                <div class="drow"><span class="l">Issue</span><span class="v">Period mismatch</span></div>
+                                <div class="drow"><span class="l">Detail</span><span class="v" style="font-size:11px;">Toko fisik: 7 bulan. EC: 6 bulan. Tidak apple-to-apple.</span></div>
+                            </div>
+                        </div>
+                        <div class="section" style="margin-top:16px;">
+                            <div class="section-h"><div><div class="section-title">Data Limitations & Assumptions</div></div></div>
+                            <div class="ablock ab-assumption" style="margin-bottom:0;"><h4>ASSUMPTION</h4><p><strong>1) Periode E-Commerce:</strong> Data E-Commerce hanya tersedia sampai Juni 2026 (6 bulan), sementara toko fisik sampai Juli 2026 (7 bulan). Perbandingan YoY dan Rev/MP untuk E-Commerce bersifat indikatif dan perlu validasi dengan data Juli.<br><br><strong>2) Revenue Calculation:</strong> Revenue total dihitung dari Rev/MP × MP × bulan. Untuk P3, revenue total (Rp5.703.804.798) diverifikasi dari sumber dokumen. Untuk unit lain, dihitung berdasarkan Rev/MP bulanan yang tercantum.<br><br><strong>3) Fungsi Ganda P1:</strong> Pelangi 1 adalah toko yang merangkap Warehouse. Revenue/MP yang sangat rendah (Rp3,9 jt) tidak dapat dibandingkan langsung dengan toko lain karena sebagian MP menangani fungsi warehouse.<br><br><strong>4) Productivity:</strong> Data productivity (%) tidak tersedia di sumber. Dashboard menggunakan Rev/MP sebagai proxy produktivitas. Jika data productivity tersedia di periode berikutnya, dapat diintegrasikan.<br><br><strong>5) Cost & Margin:</strong> Data cost dan margin tidak tersedia di sumber PPTX. Analisis margin dilakukan berdasarkan asumsi struktur cost standar. Rekomendasi rightsizing menunggu data cost tenaga kerja.</p></div>
+                        </div>
+                        <div class="section" style="margin-top:16px;">
+                            <div class="section-h"><div><div class="section-title">RISK / UNKNOWN</div></div></div>
+                            <div class="ablock ab-risk" style="margin-bottom:0;"><h4>RISK</h4><p><strong>1) E-Commerce Data Gap:</strong> Tanpa data Juli, keputusan untuk E-Commerce berisiko prematur. Penurunan -51,9% bisa jadi exaggerated atau understated tergantung performa Juli.<br><br><strong>2) Seasonality:</strong> Dokumen tidak menyebutkan faktor musiman. Penurunan P2 di April dan P3 sejak April bisa jadi dipengaruhi seasonality yang belum diidentifikasi.<br><br><strong>3) External Factors:</strong> Faktor eksternal (kompetisi baru, perubahan regulasi, kondisi ekonomi) tidak tercantum di sumber data. Analisis berfokus pada indikator internal.<br><br><strong>4) Workload Validation:</strong> Rekomendasi "tidak ada rightsizing" bersifat sementara. Jika validasi workload (Hari 1–14) menunjukkan kapasitas berlebih yang signifikan, keputusan bisa berubah.</p></div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
     <div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
         <div class="modal">
-            <div class="modal-h"><h3 id="modal-title">Detail Toko</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+            <div class="modal-h"><h3 id="modal-title">Detail Unit</h3><button class="modal-close" onclick="closeModal()">×</button></div>
             <div class="modal-body" id="modal-body"></div>
         </div>
     </div>
 
-<script>
-let appData = { stores: [], overall: {}, quality: {}, loaded: false };
-
-function showPage(id, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + id).classList.add('active');
-    if (el) el.classList.add('active');
-    const titles = { executive:'Executive Dashboard', stores:'Store Performance', productivity:'Productivity & MP', detail:'Store Detail', action:'Action Plan', quality:'Data Quality' };
-    document.getElementById('page-title').textContent = titles[id];
-}
-function showRankTab(key, el) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('tp-' + key).classList.add('active');
-}
-
-const uploadArea = document.getElementById('upload-section');
-['dragenter','dragover','dragleave','drop'].forEach(e => {
-    uploadArea.addEventListener(e, (ev) => { ev.preventDefault(); ev.stopPropagation(); });
-});
-uploadArea.addEventListener('dragenter', () => uploadArea.classList.add('dragover'));
-uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-uploadArea.addEventListener('drop', (e) => {
-    uploadArea.classList.remove('dragover');
-    const files = e.dataTransfer.files;
-    if (files.length) processFile(files[0]);
-});
-function handleFileSelect(e) {
-    if (e.target.files.length) processFile(e.target.files[0]);
-}
-
-function processFile(file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            const firstSheet = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheet];
-            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
-            parseData(json, file.name);
-        } catch (err) {
-            alert('Error membaca file: ' + err.message);
-        }
+    <script>
+    // Data from PPTX
+    const storeData = {
+        "Pelangi 1": { name: "Pelangi 1", short: "P1", mp: 8, yoy: 23.0, revPerMp: 3.9, revenueTotal: 218.4, revenueMonthly: 31.2, status: "watch", statusLabel: "Priority Attention", area: "Toko Fisik + Warehouse", condition: "B*", conditionDesc: "Growth positif tapi Rev/MP sangat rendah (fungsi ganda)", issues: ["Rev/MP sangat rendah (Rp3,9 jt/bln)", "Volatilitas tinggi (Jan -52%, Apr +154%)", "Status toko merangkap Warehouse"], decision: "Pertahankan 8 MP + workload review", notes: "Growth bagus (+23%) tapi produktivitas per MP sangat rendah. Perlu workload review + improvement wajib. Jadikan April (peak +154%) sebagai case study." },
+        "Pelangi 2": { name: "Pelangi 2", short: "P2", mp: 5, yoy: -6.2, revPerMp: 30.1, revenueTotal: 1053.5, revenueMonthly: 150.5, status: "watch", statusLabel: "Needs Improvement", area: "Toko Fisik", condition: "C", conditionDesc: "Revenue turun (YoY-), MP tetap — evaluasi produktivitas", issues: ["YoY turun -6,2%", "Penurunan signifikan April (-33,5%) dan Juli (-23,7%)", "Masalah performance, bukan shortage MP"], decision: "Pertahankan 5 MP", notes: "Fokus conversion, product mix, stok & coaching. Investigasi penurunan April dan Juli." },
+        "Pelangi 3": { name: "Pelangi 3", short: "P3", mp: 15, yoy: -6.5, revPerMp: 54.3, revenueTotal: 5703.8, revenueMonthly: 814.5, status: "watch", statusLabel: "High Productivity / Watch", area: "Toko Fisik", condition: "C", conditionDesc: "Revenue turun (YoY-), MP tetap — evaluasi produktivitas & coverage", issues: ["YoY turun -6,5%", "Deterioration sejak April", "Produktivitas tertinggi jangan dirusak"], decision: "Pertahankan 15 MP", notes: "Bedah deterioration sejak April, kontribusi Mebel vs Pecah Belah, lindungi coverage jam ramai." },
+        "Pelangi 4": { name: "Pelangi 4", short: "P4", mp: 6, yoy: 34.2, revPerMp: 28.1, revenueTotal: 1180.2, revenueMonthly: 168.6, status: "healthy", statusLabel: "Strong Growth", area: "Toko Fisik", condition: "A", conditionDesc: "Ekspansi produktif — growth kuat, efisiensi meningkat", issues: ["Output per MP masih di bawah P2 & P5", "Gap growth vs output/MP perlu ditutup"], decision: "Pertahankan 6 MP", notes: "Growth +34,2% terkuat. Cari gap growth vs output/MP; dokumentasikan sebagai best practice." },
+        "Pelangi 5": { name: "Pelangi 5", short: "P5", mp: 9, yoy: 15.9, revPerMp: 32.5, revenueTotal: 2047.5, revenueMonthly: 292.5, status: "healthy", statusLabel: "Best / Healthy", area: "Toko Fisik", condition: "A", conditionDesc: "Ekspansi produktif — growth & produktivitas sehat", issues: ["Relatif paling sehat", "Tutup gap target lewat produktivitas, bukan tambah MP"], decision: "Pertahankan 9 MP", notes: "Paling balanced. Naikkan output per orang, tutup gap target lewat produktivitas." },
+        "E-Commerce": { name: "E-Commerce", short: "EC", mp: 6, yoy: -51.9, revPerMp: 9.2, revenueTotal: 331.2, revenueMonthly: 55.2, status: "problem", statusLabel: "Critical Review", area: "E-Commerce", condition: "C*", conditionDesc: "Critical — revenue turun drastis, data incomplete (6 bulan)", issues: ["YoY turun drastis -51,9%", "Data baru sampai Juni (tidak apple-to-apple)", "Rev/MP terendah (Rp9,2 jt)"], decision: "Review workload + funnel sebelum rightsizing", notes: "Samakan periode ke Jul, bedah funnel traffic→conversion→orders→AOV, petakan workload." }
     };
-    reader.readAsArrayBuffer(file);
-}
 
-function parseData(rows, filename) {
-    if (rows.length < 2) { alert('File kosong atau format tidak valid'); return; }
-    const headers = rows[0].map(h => String(h).toLowerCase().trim().replace(/[^a-z0-9]/g, ''));
-    const quality = { duplicates: [], missing: [], negative: [], invalid: [], discrepancies: [] };
-    const findCol = (names) => {
-        for (let i = 0; i < headers.length; i++) {
-            const h = headers[i];
-            for (const n of names) { if (h.includes(n)) return i; }
-        }
-        return -1;
-    };
-    const colMap = {};
-    colMap.store = findCol(['store', 'toko', 'outlet', 'cabang', 'location']);
-    colMap.revenue = findCol(['revenue', 'penjualan', 'sales', 'omset', 'turnover', 'income']);
-    colMap.mp = findCol(['mp', 'manpower', 'headcount', 'employee', 'staff', 'karyawan', 'pegawai', 'personel']);
-    colMap.yoy = findCol(['yoy', 'growth', 'pertumbuhan', 'yearonyear', 'yearover']);
-    colMap.cost = findCol(['cost', 'biaya', 'expense', 'pengeluaran', 'operational']);
-    colMap.margin = findCol(['margin', 'profitmargin', 'netmargin']);
-    colMap.productivity = findCol(['productivity', 'produktivitas', 'efficiency', 'efisiensi']);
-    colMap.area = findCol(['area', 'region', 'wilayah', 'zone', 'territory']);
-    colMap.revenuePrev = findCol(['previous', 'prev', 'lastperiod', 'lastmonth', 'periodlalu']);
-    colMap.mpPrev = findCol(['mpprevious', 'mplast', 'mpprev', 'mpbefore']);
-
-    if (colMap.store === -1 || colMap.revenue === -1) {
-        alert('Kolom "Store" dan "Revenue" wajib ada. Terdeteksi: ' + rows[0].join(', '));
-        return;
+    function showPage(id, el) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('page-' + id).classList.add('active');
+        if (el) el.classList.add('active');
+        const titles = { executive:'Executive Dashboard', stores:'Store Performance', productivity:'Productivity & MP', detail:'Store Detail', action:'Action Plan', quality:'Data Quality' };
+        document.getElementById('page-title').textContent = titles[id];
+    }
+    function showRankTab(key, el) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('tp-' + key).classList.add('active');
     }
 
-    const stores = [];
-    const storeNames = new Set();
-    for (let i = 1; i < rows.length; i++) {
-        const r = rows[i];
-        if (!r[colMap.store]) { quality.missing.push({ row: i+1, issue: 'Store name missing' }); continue; }
-        const name = String(r[colMap.store]).trim();
-        if (storeNames.has(name.toLowerCase())) { quality.duplicates.push(name); }
-        storeNames.add(name.toLowerCase());
-        const rev = parseFloat(r[colMap.revenue]) || 0;
-        const mp = parseFloat(r[colMap.mp]) || 0;
-        const yoyRaw = r[colMap.yoy];
-        let yoy = null;
-        if (yoyRaw !== undefined && yoyRaw !== '') {
-            let yv = String(yoyRaw).replace('%','').replace(',','.');
-            yoy = parseFloat(yv);
-            if (isNaN(yoy)) { quality.invalid.push({ row: i+1, store: name, field: 'YoY', value: yoyRaw }); yoy = null; }
-        }
-        const cost = colMap.cost >= 0 ? (parseFloat(r[colMap.cost]) || 0) : null;
-        const margin = colMap.margin >= 0 ? (parseFloat(r[colMap.margin]) || null) : null;
-        const prod = colMap.productivity >= 0 ? (parseFloat(r[colMap.productivity]) || null) : null;
-        const area = colMap.area >= 0 ? String(r[colMap.area] || '') : '';
-        const revPrev = colMap.revenuePrev >= 0 ? (parseFloat(r[colMap.revenuePrev]) || null) : null;
-        const mpPrev = colMap.mpPrev >= 0 ? (parseFloat(r[colMap.mpPrev]) || null) : null;
-        if (rev < 0) quality.negative.push({ row: i+1, store: name, field: 'Revenue', value: rev });
-        if (mp < 0) quality.negative.push({ row: i+1, store: name, field: 'MP', value: mp });
-        const revPerMp = mp > 0 ? rev / mp : 0;
-        const marginCalc = (cost !== null && cost > 0) ? ((rev - cost) / rev * 100) : margin;
-        let status = 'healthy';
-        let issues = [];
-        if (yoy !== null && yoy < -10) { status = 'problem'; issues.push('YoY negatif signifikan'); }
-        else if (yoy !== null && yoy < 0) { status = 'watch'; issues.push('YoY negatif'); }
-        if (mp > 0 && revPerMp < 1000000) { status = status === 'healthy' ? 'watch' : 'problem'; issues.push('Rev/MP rendah'); }
-        if (rev === 0) { status = 'problem'; issues.push('Revenue nol'); }
-        let condition = 'N/A';
-        let conditionDesc = 'Data tidak cukup';
-        if (revPrev !== null && mpPrev !== null && mp > 0) {
-            const revUp = rev > revPrev;
-            const mpUp = mp > mpPrev;
-            const prevRevMp = mpPrev > 0 ? revPrev / mpPrev : 0;
-            const revMpUp = revPerMp > prevRevMp;
-            if (revUp && mpUp && revMpUp) { condition = 'A'; conditionDesc = 'Ekspansi produktif'; }
-            else if (revUp && mpUp && !revMpUp) { condition = 'B'; conditionDesc = 'Revenue tumbuh, efisiensi turun'; }
-            else if (!revUp && !mpUp && mp === mpPrev) { condition = 'C'; conditionDesc = 'Evaluasi produktivitas'; }
-            else if (!revUp && mpUp) { condition = 'D'; conditionDesc = 'Concern tinggi, evaluasi kapasitas'; }
-            else if (revUp && !mpUp) { condition = 'E'; conditionDesc = 'Produktivitas naik, cek operasional'; }
-            else if (!revUp && !mpUp) { condition = 'F'; conditionDesc = 'Cek sebab-akibat penurunan'; }
-        } else if (yoy !== null) {
-            if (yoy > 0) { condition = 'E*'; conditionDesc = 'Revenue tumbuh (YoY+)'; }
-            else { condition = 'C*'; conditionDesc = 'Revenue turun (YoY-)'; }
-        }
-        stores.push({ name, area, revenue: rev, mp, yoy, cost, margin: marginCalc, productivity: prod, revPerMp, revPrev, mpPrev, status, issues, condition, conditionDesc });
-    }
-    const totalRev = stores.reduce((s, st) => s + st.revenue, 0);
-    const totalMp = stores.reduce((s, st) => s + st.mp, 0);
-    const totalCost = stores.filter(s => s.cost !== null).reduce((s, st) => s + (st.cost || 0), 0);
-    const avgYoy = stores.filter(s => s.yoy !== null).reduce((s, st, _, arr) => s + (st.yoy || 0) / arr.length, 0);
-    const avgProd = stores.filter(s => s.productivity !== null).reduce((s, st, _, arr) => s + (st.productivity || 0) / arr.length, 0);
-    const avgMargin = stores.filter(s => s.margin !== null).reduce((s, st, _, arr) => s + (st.margin || 0) / arr.length, 0);
-    appData = { stores, filename, overall: { totalRev, totalMp, revPerMp: totalMp > 0 ? totalRev / totalMp : 0, avgYoy, totalCost, avgMargin, avgProd }, quality, loaded: true };
-    renderAll();
-}
-
-function renderAll() {
-    document.getElementById('upload-section').classList.add('hidden');
-    document.getElementById('exec-summary').classList.remove('hidden');
-    document.getElementById('period-display').textContent = 'File: ' + appData.filename + ' | Toko: ' + appData.stores.length;
-    renderKPIs();
-    renderStatusCounts();
-    renderRankings();
-    renderConditions();
-    renderScatter();
-    renderRevMpChart();
-    renderDetailSelect();
-    renderActionPlan();
-    renderDataQuality();
-    renderExecutiveSummary();
-}
-
-function fmtMoney(n) {
-    if (n === null || n === undefined || isNaN(n)) return 'N/A';
-    if (n >= 1e9) return 'Rp ' + (n / 1e9).toFixed(2) + ' Miliar';
-    if (n >= 1e6) return 'Rp ' + (n / 1e6).toFixed(1) + ' Juta';
-    return 'Rp ' + n.toLocaleString('id-ID');
-}
-function fmtPct(n) {
-    if (n === null || n === undefined || isNaN(n)) return 'N/A';
-    return (n > 0 ? '+' : '') + n.toFixed(1) + '%';
-}
-function fmtNum(n) {
-    if (n === null || n === undefined || isNaN(n)) return 'N/A';
-    return n.toLocaleString('id-ID');
-}
-
-function renderKPIs() {
-    const o = appData.overall;
-    document.getElementById('kpi-revenue').textContent = fmtMoney(o.totalRev);
-    document.getElementById('kpi-revenue').classList.remove('na');
-    document.getElementById('kpi-mp').textContent = fmtNum(o.totalMp);
-    document.getElementById('kpi-mp').classList.remove('na');
-    document.getElementById('kpi-rev-mp').textContent = fmtMoney(o.revPerMp);
-    document.getElementById('kpi-rev-mp').classList.remove('na');
-    if (o.avgYoy !== null && !isNaN(o.avgYoy)) {
-        document.getElementById('kpi-yoy').textContent = fmtPct(o.avgYoy);
-        document.getElementById('kpi-yoy').classList.remove('na');
-        document.getElementById('kpi-yoy-change').textContent = 'Rata-rata YoY';
-        document.getElementById('kpi-yoy-change').className = 'kpi-change ' + (o.avgYoy >= 0 ? 'pos' : 'neg');
-    }
-    if (o.avgProd !== null && !isNaN(o.avgProd)) {
-        document.getElementById('kpi-prod').textContent = o.avgProd.toFixed(1) + '%';
-        document.getElementById('kpi-prod').classList.remove('na');
-    }
-    if (o.totalCost > 0) {
-        document.getElementById('kpi-cost').textContent = fmtMoney(o.totalCost);
-        document.getElementById('kpi-cost').classList.remove('na');
-    }
-    if (o.avgMargin !== null && !isNaN(o.avgMargin)) {
-        document.getElementById('kpi-margin').textContent = o.avgMargin.toFixed(1) + '%';
-        document.getElementById('kpi-margin').classList.remove('na');
-    }
-}
-
-function renderStatusCounts() {
-    const counts = { healthy: 0, watch: 0, problem: 0 };
-    appData.stores.forEach(s => counts[s.status]++);
-    document.getElementById('count-ok').textContent = counts.healthy;
-    document.getElementById('count-ok').classList.remove('na');
-    document.getElementById('count-warn').textContent = counts.watch;
-    document.getElementById('count-warn').classList.remove('na');
-    document.getElementById('count-err').textContent = counts.problem;
-    document.getElementById('count-err').classList.remove('na');
-}
-
-function statusBadge(s) {
-    const map = { healthy: ['st-ok','Healthy'], watch: ['st-warn','Watch'], problem: ['st-err','Problem'] };
-    const [cls, txt] = map[s] || ['st-na','N/A'];
-    const color = s==='healthy'?'var(--pos)':s==='watch'?'var(--warn)':'var(--neg)';
-    return '<span class="status ' + cls + '"><span class="dot" style="background:' + color + '"></span>' + txt + '</span>';
-}
-
-function renderRankings() {
-    const byRev = [...appData.stores].sort((a,b) => b.revenue - a.revenue);
-    const byYoy = [...appData.stores].filter(s => s.yoy !== null).sort((a,b) => (b.yoy||0) - (a.yoy||0));
-    const byEff = [...appData.stores].filter(s => s.revPerMp > 0).sort((a,b) => b.revPerMp - a.revPerMp);
-    const byProd = [...appData.stores].filter(s => s.productivity !== null).sort((a,b) => (b.productivity||0) - (a.productivity||0));
-    const byConcern = [...appData.stores].sort((a,b) => {
-        const score = { problem: 3, watch: 2, healthy: 1 };
-        return (score[b.status]||0) - (score[a.status]||0);
+    // Render charts on load
+    window.addEventListener('load', function() {
+        renderScatterChart();
+        renderRevMpChart();
+        renderProdChart();
+        renderConditionChart();
     });
-    const makeRows = (list, colsFn) => list.map((s, i) => '<tr class="clickable" onclick="openModalByName(' + "'" + s.name + "'" + ')">' + colsFn(s, i+1) + '</tr>').join('');
-    document.getElementById('tb-revenue').innerHTML = byRev.length ? makeRows(byRev, (s, r) =>
-        '<td>' + r + '</td><td><strong>' + s.name + '</strong></td><td>' + fmtMoney(s.revenue) + '</td><td>' + (s.yoy !== null ? fmtPct(s.yoy) : 'N/A') + '</td><td>' + fmtNum(s.mp) + '</td><td>' + fmtMoney(s.revPerMp) + '</td><td>' + (s.productivity !== null ? s.productivity + '%' : 'N/A') + '</td><td>' + statusBadge(s.status) + '</td>') : '<tr><td colspan="8" class="empty">Tidak ada data</td></tr>';
-    document.getElementById('tb-growth').innerHTML = byYoy.length ? makeRows(byYoy, (s, r) =>
-        '<td>' + r + '</td><td><strong>' + s.name + '</strong></td><td>' + fmtPct(s.yoy) + '</td><td>' + fmtMoney(s.revenue) + '</td><td>' + statusBadge(s.status) + '</td>') : '<tr><td colspan="5" class="empty">Data YoY tidak tersedia</td></tr>';
-    document.getElementById('tp-eff').innerHTML = byEff.length ? makeRows(byEff, (s, r) =>
-        '<td>' + r + '</td><td><strong>' + s.name + '</strong></td><td>' + fmtMoney(s.revPerMp) + '</td><td>' + fmtMoney(s.revenue) + '</td><td>' + fmtNum(s.mp) + '</td><td>' + statusBadge(s.status) + '</td>') : '<tr><td colspan="5" class="empty">Data MP tidak tersedia</td></tr>';
-    document.getElementById('tb-prod').innerHTML = byProd.length ? makeRows(byProd, (s, r) =>
-        '<td>' + r + '</td><td><strong>' + s.name + '</strong></td><td>' + (s.productivity !== null ? s.productivity + '%' : 'N/A') + '</td><td>' + fmtMoney(s.revenue) + '</td><td>' + statusBadge(s.status) + '</td>') : '<tr><td colspan="5" class="empty">Data Productivity tidak tersedia</td></tr>';
-    document.getElementById('tb-concern').innerHTML = byConcern.length ? makeRows(byConcern, (s, r) =>
-        '<td>' + r + '</td><td><strong>' + s.name + '</strong></td><td>' + (s.issues.join(', ') || '-') + '</td><td>' + fmtMoney(s.revenue) + '</td><td>' + (s.yoy !== null ? fmtPct(s.yoy) : 'N/A') + '</td><td>' + statusBadge(s.status) + '</td>') : '<tr><td colspan="6" class="empty">Tidak ada data</td></tr>';
-}
-
-function renderConditions() {
-    const tbody = document.getElementById('tb-conditions');
-    if (!appData.stores.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Upload data</td></tr>'; return; }
-    tbody.innerHTML = appData.stores.map(s => {
-        const condColor = s.condition === 'A' || s.condition === 'E' || s.condition === 'E*' ? 'var(--pos)' : s.condition === 'D' ? 'var(--neg)' : 'var(--warn)';
-        return '<tr class="clickable" onclick="openModalByName(' + "'" + s.name + "'" + ')"><td><strong>' + s.name + '</strong></td><td>' + fmtMoney(s.revenue) + '</td><td>' + fmtNum(s.mp) + '</td><td>' + fmtMoney(s.revPerMp) + '</td><td><span style="color:' + condColor + '; font-weight:700;">' + s.condition + '</span></td><td>' + s.conditionDesc + '</td></tr>';
-    }).join('');
-}
-
-function renderScatter() {
-    const box = document.getElementById('chart-scatter');
-    if (!appData.stores.length) return;
-    box.innerHTML = '';
-    const canvas = document.createElement('canvas');
-    canvas.width = box.clientWidth || 500;
-    canvas.height = 300;
-    box.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width, h = canvas.height;
-    const pad = 40;
-    const maxRev = Math.max(...appData.stores.map(s => s.revenue), 1);
-    const maxMp = Math.max(...appData.stores.map(s => s.mp), 1);
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
-    for (let i = 0; i <= 5; i++) {
-        const x = pad + (w - 2*pad) * (i/5);
-        const y = pad + (h - 2*pad) * (i/5);
-        ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, h-pad); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w-pad, y); ctx.stroke();
-    }
-    ctx.fillStyle = '#64748b'; ctx.font = '11px Inter';
-    ctx.textAlign = 'center';
-    ctx.fillText('Manpower →', w/2, h-10);
-    ctx.save(); ctx.translate(15, h/2); ctx.rotate(-Math.PI/2); ctx.fillText('Revenue →', 0, 0); ctx.restore();
-    appData.stores.forEach(s => {
-        const x = pad + (s.mp / maxMp) * (w - 2*pad);
-        const y = h - pad - (s.revenue / maxRev) * (h - 2*pad);
-        const color = s.status === 'healthy' ? '#10b981' : s.status === 'watch' ? '#f59e0b' : '#ef4444';
-        ctx.fillStyle = color;
-        ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#334155'; ctx.font = '10px Inter';
-        ctx.fillText(s.name.substring(0,8), x, y - 10);
+    window.addEventListener('resize', function() {
+        renderScatterChart();
+        renderRevMpChart();
+        renderProdChart();
+        renderConditionChart();
     });
-}
 
-function renderRevMpChart() {
-    const box = document.getElementById('chart-revmp');
-    if (!appData.stores.length) return;
-    box.innerHTML = '';
-    const canvas = document.createElement('canvas');
-    canvas.width = box.clientWidth || 500;
-    canvas.height = 300;
-    box.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width, h = canvas.height;
-    const pad = 50;
-    const sorted = [...appData.stores].sort((a,b) => b.revPerMp - a.revPerMp);
-    const maxV = Math.max(...sorted.map(s => s.revPerMp), 1);
-    const barW = Math.max(20, (w - 2*pad) / sorted.length - 4);
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, w, h);
-    sorted.forEach((s, i) => {
-        const bh = (s.revPerMp / maxV) * (h - 2*pad);
-        const x = pad + i * (barW + 4);
-        const y = h - pad - bh;
-        const color = s.status === 'healthy' ? '#10b981' : s.status === 'watch' ? '#f59e0b' : '#ef4444';
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, barW, bh);
-        ctx.fillStyle = '#334155'; ctx.font = '9px Inter'; ctx.textAlign = 'center';
-        ctx.fillText(s.name.substring(0,6), x + barW/2, h - pad + 14);
-    });
-}
+    function renderScatterChart() {
+        const box = document.getElementById('chart-scatter');
+        const canvas = document.getElementById('canvas-scatter');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = box.clientWidth || 500;
+        const h = 320;
+        canvas.width = w; canvas.height = h;
+        const pad = 50;
+        const stores = Object.values(storeData);
+        const maxRev = Math.max(...stores.map(s => s.revenueMonthly), 1);
+        const maxMp = Math.max(...stores.map(s => s.mp), 1);
 
-function renderDetailSelect() {
-    const sel = document.getElementById('detail-select');
-    sel.innerHTML = '<option value="">-- Pilih Toko --</option>' + appData.stores.map(s => '<option value="' + s.name + '">' + s.name + '</option>').join('');
-}
-function loadStoreDetail(name) {
-    if (!name) { document.getElementById('detail-content').innerHTML = '<div class="chart-box" style="height:200px;"><div>Pilih toko</div></div>'; return; }
-    openModalByName(name);
-}
-function openModalByName(name) {
-    const s = appData.stores.find(x => x.name === name);
-    if (!s) return;
-    document.getElementById('modal-title').textContent = 'Detail: ' + s.name;
-    const area = s.area ? ' (' + s.area + ')' : '';
-    const html = '<div class="detail-grid">' +
-        '<div class="detail-card"><h4>Revenue</h4><div class="drow"><span class="l">Current</span><span class="v">' + fmtMoney(s.revenue) + '</span></div><div class="drow"><span class="l">Previous</span><span class="v">' + (s.revPrev !== null ? fmtMoney(s.revPrev) : 'N/A') + '</span></div><div class="drow"><span class="l">YoY</span><span class="v">' + (s.yoy !== null ? fmtPct(s.yoy) : 'N/A') + '</span></div></div>' +
-        '<div class="detail-card"><h4>Manpower</h4><div class="drow"><span class="l">Jumlah MP</span><span class="v">' + fmtNum(s.mp) + '</span></div><div class="drow"><span class="l">Previous MP</span><span class="v">' + (s.mpPrev !== null ? fmtNum(s.mpPrev) : 'N/A') + '</span></div><div class="drow"><span class="l">Revenue/MP</span><span class="v">' + fmtMoney(s.revPerMp) + '</span></div></div>' +
-        '<div class="detail-card"><h4>Efficiency</h4><div class="drow"><span class="l">Productivity</span><span class="v">' + (s.productivity !== null ? s.productivity + '%' : 'N/A') + '</span></div><div class="drow"><span class="l">Cost</span><span class="v">' + (s.cost !== null ? fmtMoney(s.cost) : 'N/A') + '</span></div><div class="drow"><span class="l">Margin</span><span class="v">' + (s.margin !== null ? s.margin.toFixed(1) + '%' : 'N/A') + '</span></div></div>' +
-        '</div>' +
-        '<div class="ablock ab-fact"><h4>FACT</h4><p>Toko <strong>' + s.name + area + '</strong> memiliki revenue ' + fmtMoney(s.revenue) + ' dengan manpower ' + fmtNum(s.mp) + ' orang. Revenue per MP adalah ' + fmtMoney(s.revPerMp) + '. Status: ' + s.status.toUpperCase() + '.</p></div>' +
-        '<div class="ablock ab-analysis"><h4>ANALYSIS</h4><p>' + getAnalysisText(s) + '</p></div>' +
-        '<div class="ablock ab-assumption"><h4>ASSUMPTION</h4><p>' + getAssumptionText(s) + '</p></div>' +
-        '<div class="ablock ab-risk"><h4>RISK / UNKNOWN</h4><p>' + getRiskText(s) + '</p></div>' +
-        '<div class="ablock ab-rec"><h4>RECOMMENDED ACTION</h4><p>' + getRecommendationText(s) + '</p></div>';
-    document.getElementById('modal-body').innerHTML = html;
-    document.getElementById('modal').classList.add('active');
-}
-function openModal(idx) { openModalByName(appData.stores[idx].name); }
-function closeModal() { document.getElementById('modal').classList.remove('active'); }
-
-function getAnalysisText(s) {
-    let txt = '';
-    if (s.yoy !== null) {
-        if (s.yoy > 10) txt += 'Pertumbuhan YoY sangat positif (' + fmtPct(s.yoy) + '), menunjukkan momentum penjualan yang kuat. ';
-        else if (s.yoy > 0) txt += 'Pertumbuhan YoY positif (' + fmtPct(s.yoy) + '), toko masih tumbuh. ';
-        else if (s.yoy > -10) txt += 'YoY negatif (' + fmtPct(s.yoy) + '), terdapat perlambatan yang perlu diidentifikasi penyebabnya. ';
-        else txt += 'YoY turun signifikan (' + fmtPct(s.yoy) + '), perlu evaluasi mendalam. ';
-    }
-    if (s.revPerMp > 0) {
-        txt += 'Revenue per MP sebesar ' + fmtMoney(s.revPerMp) + '. ';
-        if (s.revPrev && s.mpPrev) {
-            const prevRevMp = s.mpPrev > 0 ? s.revPrev / s.mpPrev : 0;
-            if (s.revPerMp > prevRevMp) txt += 'Efisiensi manpower meningkat dibanding periode sebelumnya. ';
-            else txt += 'Efisiensi manpower menurun dibanding periode sebelumnya. ';
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+        for (let i = 0; i <= 5; i++) {
+            const x = pad + (w - 2*pad) * (i/5);
+            const y = pad + (h - 2*pad) * (i/5);
+            ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, h-pad); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w-pad, y); ctx.stroke();
         }
-    }
-    if (s.condition !== 'N/A') txt += 'Kondisi toko masuk kategori ' + s.condition + ' (' + s.conditionDesc + '). ';
-    return txt || 'Data tidak cukup untuk analisis mendalam.';
-}
-function getAssumptionText(s) {
-    if (s.revPrev === null || s.mpPrev === null) return 'Tidak ada data periode sebelumnya, sehingga analisis kondisi (A-F) menggunakan asumsi berdasarkan YoY saja jika tersedia.';
-    return 'Analisis kondisi menggunakan data periode sebelumnya yang tersedia di file.';
-}
-function getRiskText(s) {
-    const risks = [];
-    if (s.status === 'problem') risks.push('Status PROBLEM menunjukkan risiko penurunan kinerja yang signifikan.');
-    if (s.status === 'watch') risks.push('Status WATCH menunjukkan potensi masalah jika tidak ditindaklanjuti.');
-    if (s.yoy !== null && s.yoy < -15) risks.push('Penurunan YoY di atas 15% berisiko terhadap target tahunan.');
-    if (s.mp > 0 && s.revPerMp < 500000) risks.push('Revenue/MP sangat rendah, berisiko tidak menutupi biaya operasional per karyawan.');
-    return risks.join(' ') || 'Risiko spesifik belum dapat diidentifikasi dari data yang tersedia.';
-}
-function getRecommendationText(s) {
-    const recs = [];
-    if (s.status === 'problem') {
-        if (s.yoy !== null && s.yoy < -10) recs.push('Lakukan evaluasi mendalam terhadap penyebab penurunan revenue: cek faktor eksternal (kompetisi, lokasi) dan internal (operasional, inventory, service quality).');
-        if (s.mp > 0 && s.revPerMp < 1000000) recs.push('Evaluasi distribusi MP berdasarkan jam/hari operasional dan bandingkan dengan pola revenue. Jangan langsung kurangi MP tanpa evidence.');
-        if (s.condition === 'D') recs.push('Revenue turun sementara MP naik — evaluasi apakah penambahan MP diikuti dengan penambahan kapasitas layanan yang tidak tercapai, atau apakah ada masalah konversi.');
-    }
-    if (s.status === 'watch') {
-        recs.push('Pantau trend 2-4 minggu ke depan. Siapkan rencana contingency jika trend negatif berlanjut.');
-        if (s.yoy !== null && s.yoy < 0) recs.push('Identifikasi penyebab penurunan YoY: cek apakah musiman, perubahan customer behavior, atau masalah operasional.');
-    }
-    if (s.condition === 'B') recs.push('Revenue tumbuh tapi efisiensi manpower turun — evaluasi apakah penambahan MP proporsional dengan pertumbuhan, atau ada idle time yang bisa dioptimalkan.');
-    if (s.condition === 'E' || s.condition === 'E*') recs.push('Produktivitas meningkat — cek apakah operasional masih sehat dan tidak ada burnout atau service quality issue akibat MP yang lebih tipis.');
-    if (s.condition === 'F') recs.push('Revenue dan MP turun bersamaan — investigasi apakah penurunan MP menyebabkan atau mengikuti penurunan revenue. Cek apakah ada store closure atau restructuring.');
-    if (s.productivity !== null && s.productivity < 60) recs.push('Productivity di bawah 60% — evaluasi training, SOP, dan alokasi tugas. Cek apakah ada bottleneck dalam proses operasional.');
-    if (s.margin !== null && s.margin < 10) recs.push('Margin sangat tipis — review struktur cost dan pricing strategy. Identifikasi cost driver terbesar.');
-    return recs.join(' ') || 'Lanjutkan monitoring rutin. Data belum cukup untuk rekomendasi spesifik.';
-}
+        ctx.fillStyle = '#64748b'; ctx.font = '11px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText('Manpower →', w/2, h-12);
+        ctx.save(); ctx.translate(18, h/2); ctx.rotate(-Math.PI/2); ctx.fillText('Revenue per Bulan (Rp juta) →', 0, 0); ctx.restore();
 
-function renderActionPlan() {
-    const tbody = document.getElementById('tb-action');
-    if (!appData.stores.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Upload data</td></tr>'; return; }
-    const priorityStores = [...appData.stores].sort((a,b) => {
-        const score = { problem: 3, watch: 2, healthy: 1 };
-        return (score[b.status]||0) - (score[a.status]||0);
-    });
-    tbody.innerHTML = priorityStores.map(s => {
-        const pri = s.status === 'problem' ? 'HIGH' : s.status === 'watch' ? 'MEDIUM' : 'LOW';
-        const priClass = s.status === 'problem' ? 'pri-high' : s.status === 'watch' ? 'pri-med' : 'pri-low';
-        const issue = s.issues.join(', ') || 'Tidak ada issue utama';
-        const evidence = 'Revenue: ' + fmtMoney(s.revenue) + ', YoY: ' + (s.yoy !== null ? fmtPct(s.yoy) : 'N/A') + ', MP: ' + fmtNum(s.mp) + ', Rev/MP: ' + fmtMoney(s.revPerMp);
-        const impact = s.status === 'problem' ? 'Risiko signifikan terhadap overall performance dan target' : s.status === 'watch' ? 'Potensi dampak jika tidak ditindaklanjuti' : 'Performa stabil, dampak minimal';
-        const action = getRecommendationText(s).substring(0, 120) + '...';
-        return '<tr><td><strong>' + s.name + '</strong></td><td>' + issue + '</td><td>' + evidence + '</td><td>' + impact + '</td><td>' + action + '</td><td class="' + priClass + '">' + pri + '</td></tr>';
-    }).join('');
-}
+        // Axis values
+        ctx.font = '10px Inter';
+        ctx.textAlign = 'right';
+        for (let i = 0; i <= 5; i++) {
+            const y = h - pad - (h - 2*pad) * (i/5);
+            ctx.fillText(Math.round(maxRev * i / 5) + ' jt', pad - 8, y + 3);
+        }
+        ctx.textAlign = 'center';
+        for (let i = 0; i <= 5; i++) {
+            const x = pad + (w - 2*pad) * (i/5);
+            ctx.fillText(Math.round(maxMp * i / 5), x, h - pad + 18);
+        }
 
-function renderDataQuality() {
-    const q = appData.quality;
-    let html = '';
-    if (q.duplicates.length) html += '<div class="alert alert-warn"><span class="alert-icon">⚠️</span><div><strong>Duplicate Store Detected:</strong> ' + q.duplicates.join(', ') + '</div></div>';
-    if (q.missing.length) html += '<div class="alert alert-warn"><span class="alert-icon">⚠️</span><div><strong>Missing Values:</strong> ' + q.missing.length + ' baris dengan data tidak lengkap</div></div>';
-    if (q.negative.length) html += '<div class="alert alert-err"><span class="alert-icon">🚨</span><div><strong>Negative Values:</strong> ' + q.negative.map(n => n.store + ' (' + n.field + ': ' + n.value + ')').join(', ') + '</div></div>';
-    if (q.invalid.length) html += '<div class="alert alert-warn"><span class="alert-icon">⚠️</span><div><strong>Invalid Values:</strong> ' + q.invalid.length + ' field dengan format tidak valid</div></div>';
-    if (!html) html = '<div class="alert alert-ok"><span class="alert-icon">✅</span><div><strong>Data Quality OK</strong><br>Tidak ditemukan masalah signifikan pada data.</div></div>';
-    html += '<div class="detail-grid mt-4"><div class="detail-card"><h4>Duplicate Store</h4><div class="drow"><span class="l">Found</span><span class="v">' + q.duplicates.length + '</span></div></div><div class="detail-card"><h4>Missing Values</h4><div class="drow"><span class="l">Rows</span><span class="v">' + q.missing.length + '</span></div></div><div class="detail-card"><h4>Negative Values</h4><div class="drow"><span class="l">Found</span><span class="v">' + q.negative.length + '</span></div></div><div class="detail-card"><h4>Invalid Format</h4><div class="drow"><span class="l">Fields</span><span class="v">' + q.invalid.length + '</span></div></div></div>';
-    document.getElementById('dq-content').innerHTML = html;
-}
+        stores.forEach(s => {
+            const x = pad + (s.mp / maxMp) * (w - 2*pad);
+            const y = h - pad - (s.revenueMonthly / maxRev) * (h - 2*pad);
+            const color = s.status === 'healthy' ? '#10b981' : s.status === 'watch' ? '#f59e0b' : '#ef4444';
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+            ctx.fillStyle = '#334155'; ctx.font = 'bold 11px Inter';
+            ctx.fillText(s.short, x, y - 14);
+        });
+    }
 
-function renderExecutiveSummary() {
-    const o = appData.overall;
-    const counts = { healthy: 0, watch: 0, problem: 0 };
-    appData.stores.forEach(s => counts[s.status]++);
-    const problemStores = appData.stores.filter(s => s.status === 'problem').map(s => s.name);
-    const watchStores = appData.stores.filter(s => s.status === 'watch').map(s => s.name);
-    document.getElementById('es-what').textContent = 'Dari ' + appData.stores.length + ' toko, ' + counts.healthy + ' sehat, ' + counts.watch + ' perlu dipantau, dan ' + counts.problem + ' bermasalah. Total revenue ' + fmtMoney(o.totalRev) + ' dengan ' + fmtNum(o.totalMp) + ' manpower.';
-    document.getElementById('es-why').textContent = o.avgYoy !== null ? 'Rata-rata YoY ' + fmtPct(o.avgYoy) + '. ' + (counts.problem > 0 ? 'Penurunan kinerja terdeteksi pada beberapa toko yang perlu investigasi.' : 'Mayoritas toko menunjukkan trend positif.') : 'Data YoY tidak tersedia untuk analisis pertumbuhan.';
-    document.getElementById('es-impact').textContent = counts.problem > 0 ? counts.problem + ' toko bermasalah berpotensi menurunkan overall performance. Efisi manpower perlu evaluasi.' : 'Performa stabil dengan efisi manpower ' + fmtMoney(o.revPerMp) + '.';
-    document.getElementById('es-priority').textContent = problemStores.length ? 'Prioritas: ' + problemStores.join(', ') + ' (status PROBLEM).' : watchStores.length ? 'Perhatian: ' + watchStores.join(', ') + ' (status WATCH).' : 'Tidak ada toko yang memerlukan perhatian khusus saat ini.';
-    document.getElementById('es-action').textContent = problemStores.length ? 'Segera lakukan evaluasi mendalam pada toko PROBLEM. Review action plan untuk detail rekomendasi spesifik per toko.' : 'Lanjutkan monitoring rutin. Fokus pada toko WATCH untuk mencegah eskalasi.';
-}
-</script>
+    function renderRevMpChart() {
+        const box = document.getElementById('chart-revmp');
+        const canvas = document.getElementById('canvas-revmp');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = box.clientWidth || 500;
+        const h = 320;
+        canvas.width = w; canvas.height = h;
+        const pad = 50;
+        const sorted = Object.values(storeData).sort((a,b) => b.revPerMp - a.revPerMp);
+        const maxV = Math.max(...sorted.map(s => s.revPerMp), 1);
+        const barW = Math.max(30, (w - 2*pad) / sorted.length - 10);
+
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, w, h);
+
+        // Grid
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+        for (let i = 0; i <= 5; i++) {
+            const y = h - pad - (h - 2*pad) * (i/5);
+            ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w-pad, y); ctx.stroke();
+        }
+
+        // Axis
+        ctx.fillStyle = '#64748b'; ctx.font = '10px Inter';
+        ctx.textAlign = 'right';
+        for (let i = 0; i <= 5; i++) {
+            const y = h - pad - (h - 2*pad) * (i/5);
+            ctx.fillText(Math.round(maxV * i / 5) + ' jt', pad - 8, y + 3);
+        }
+
+        sorted.forEach((s, i) => {
+            const bh = (s.revPerMp / maxV) * (h - 2*pad);
+            const x = pad + i * (barW + 10) + 10;
+            const y = h - pad - bh;
+            const color = s.status === 'healthy' ? '#10b981' : s.status === 'watch' ? '#f59e0b' : '#ef4444';
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, barW, bh);
+            ctx.fillStyle = '#334155'; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+            ctx.fillText(s.short, x + barW/2, h - pad + 18);
+            ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Inter';
+            ctx.fillText(s.revPerMp + ' jt', x + barW/2, y + 16);
+        });
+    }
+
+    function renderProdChart() {
+        const box = document.getElementById('chart-prod-compare');
+        const canvas = document.getElementById('canvas-prod');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = box.clientWidth || 800;
+        const h = 300;
+        canvas.width = w; canvas.height = h;
+        const pad = 50;
+        const sorted = Object.values(storeData).sort((a,b) => b.revPerMp - a.revPerMp);
+        const maxV = Math.max(...sorted.map(s => s.revPerMp), 1);
+        const barW = Math.max(50, (w - 2*pad) / sorted.length - 20);
+
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, w, h);
+
+        // Benchmark line (avg 30.7)
+        const avgLine = 30.7;
+        const avgY = h - pad - (avgLine / maxV) * (h - 2*pad);
+        ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+        ctx.beginPath(); ctx.moveTo(pad, avgY); ctx.lineTo(w-pad, avgY); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#2563eb'; ctx.font = 'bold 11px Inter';
+        ctx.fillText('Avg Toko Fisik: Rp30,7 jt', w - pad - 120, avgY - 6);
+
+        sorted.forEach((s, i) => {
+            const bh = (s.revPerMp / maxV) * (h - 2*pad);
+            const x = pad + i * (barW + 20) + 20;
+            const y = h - pad - bh;
+            const color = s.status === 'healthy' ? '#10b981' : s.status === 'watch' ? '#f59e0b' : '#ef4444';
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, barW, bh);
+            ctx.fillStyle = '#334155'; ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+            ctx.fillText(s.name.replace('Pelangi ', 'P'), x + barW/2, h - pad + 20);
+            ctx.fillStyle = '#fff'; ctx.font = 'bold 11px Inter';
+            ctx.fillText('Rp' + s.revPerMp, x + barW/2, y + 18);
+        });
+    }
+
+    function renderConditionChart() {
+        const box = document.getElementById('chart-conditions');
+        const canvas = document.getElementById('canvas-conditions');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = box.clientWidth || 800;
+        const h = 340;
+        canvas.width = w; canvas.height = h;
+        const pad = 60;
+
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, w, h);
+
+        // Draw quadrants
+        const midX = w / 2;
+        const midY = h / 2;
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(midX, pad); ctx.lineTo(midX, h-pad); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pad, midY); ctx.lineTo(w-pad, midY); ctx.stroke();
+
+        // Labels
+        ctx.fillStyle = '#64748b'; ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+        ctx.fillText('Revenue YoY (%) →', w/2, h - 15);
+        ctx.save(); ctx.translate(20, h/2); ctx.rotate(-Math.PI/2); ctx.fillText('Revenue/MP per Bulan (Rp juta) →', 0, 0); ctx.restore();
+
+        // Quadrant labels
+        ctx.font = '11px Inter';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('A: Ekspansi Produktif', w - pad - 80, pad + 20);
+        ctx.fillText('E: Produktivitas Naik', pad + 80, pad + 20);
+        ctx.fillText('B: Growth, Efisiensi Turun', w - pad - 90, h - pad - 10);
+        ctx.fillText('C/F: Evaluasi/Concern', pad + 90, h - pad - 10);
+
+        // Plot points
+        const stores = Object.values(storeData);
+        stores.forEach(s => {
+            const x = midX + (s.yoy / 60) * (w/2 - pad);
+            const y = midY - (s.revPerMp / 60) * (h/2 - pad);
+            const color = s.status === 'healthy' ? '#10b981' : s.status === 'watch' ? '#f59e0b' : '#ef4444';
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+            ctx.fillStyle = '#1e293b'; ctx.font = 'bold 12px Inter'; ctx.textAlign = 'center';
+            ctx.fillText(s.short, x, y - 16);
+        });
+    }
+
+    function loadStoreDetail(name) {
+        if (!name) { document.getElementById('detail-content').innerHTML = '<div class="chart-box" style="height:200px;"><div>Pilih unit untuk melihat detail</div></div>'; return; }
+        openModalByName(name);
+    }
+
+    function openModalByName(name) {
+        const s = storeData[name];
+        if (!s) return;
+        document.getElementById('modal-title').textContent = 'Detail: ' + s.name;
+        const areaText = s.area ? ' (' + s.area + ')' : '';
+        const statusColor = s.status === 'healthy' ? 'var(--pos)' : s.status === 'watch' ? 'var(--warn)' : 'var(--neg)';
+        const statusText = s.status === 'healthy' ? 'HEALTHY' : s.status === 'watch' ? 'WATCH' : 'PROBLEM';
+
+        const html = '<div class="detail-grid">' +
+            '<div class="detail-card"><h4>Revenue</h4><div class="drow"><span class="l">Total (7mo)</span><span class="v">Rp ' + s.revenueTotal.toFixed(1) + ' jt</span></div><div class="drow"><span class="l">Per Bulan</span><span class="v">Rp ' + s.revenueMonthly.toFixed(1) + ' jt</span></div><div class="drow"><span class="l">YoY Growth</span><span class="v" style="color:' + (s.yoy >= 0 ? 'var(--pos)' : 'var(--neg)') + '">' + (s.yoy > 0 ? '+' : '') + s.yoy + '%</span></div></div>' +
+            '<div class="detail-card"><h4>Manpower</h4><div class="drow"><span class="l">Jumlah MP</span><span class="v">' + s.mp + ' orang</span></div><div class="drow"><span class="l">Revenue/MP (mo)</span><span class="v">Rp ' + s.revPerMp + ' jt</span></div><div class="drow"><span class="l">Area</span><span class="v">' + s.area + '</span></div></div>' +
+            '<div class="detail-card"><h4>Status & Decision</h4><div class="drow"><span class="l">Status</span><span class="v" style="color:' + statusColor + '">' + statusText + '</span></div><div class="drow"><span class="l">Label</span><span class="v">' + s.statusLabel + '</span></div><div class="drow"><span class="l">Keputusan</span><span class="v">' + s.decision + '</span></div></div>' +
+            '</div>' +
+            '<div class="ablock ab-fact"><h4>FACT</h4><p>Unit <strong>' + s.name + areaText + '</strong> memiliki ' + s.mp + ' MP dengan revenue per bulan Rp ' + s.revenueMonthly.toFixed(1) + ' juta (total 7 bulan: Rp ' + s.revenueTotal.toFixed(1) + ' juta). Revenue per MP per bulan adalah <strong>Rp ' + s.revPerMp + ' juta</strong>. YoY growth: <strong>' + (s.yoy > 0 ? '+' : '') + s.yoy + '%</strong>. Status: <strong>' + statusText + '</strong>. Kondisi: <strong>' + s.condition + '</strong> — ' + s.conditionDesc + '.</p></div>' +
+            '<div class="ablock ab-analysis"><h4>ANALYSIS</h4><p>' + getAnalysis(s) + '</p></div>' +
+            '<div class="ablock ab-assumption"><h4>ASSUMPTION</h4><p>' + getAssumption(s) + '</p></div>' +
+            '<div class="ablock ab-risk"><h4>RISK / UNKNOWN</h4><p>' + getRisk(s) + '</p></div>' +
+            '<div class="ablock ab-rec"><h4>RECOMMENDED ACTION</h4><p>' + getRecommendation(s) + '</p></div>';
+        document.getElementById('modal-body').innerHTML = html;
+        document.getElementById('modal').classList.add('active');
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+    function getAnalysis(s) {
+        let txt = '';
+        if (s.yoy > 10) txt += 'Pertumbuhan YoY sangat positif (+' + s.yoy + '%), menunjukkan momentum penjualan yang kuat. ';
+        else if (s.yoy > 0) txt += 'Pertumbuhan YoY positif (+' + s.yoy + '%), toko masih tumbuh. ';
+        else if (s.yoy > -10) txt += 'YoY negatif (' + s.yoy + '%), terdapat perlambatan yang perlu diidentifikasi penyebabnya. ';
+        else txt += 'YoY turun signifikan (' + s.yoy + '%), perlu evaluasi mendalam. ';
+        txt += 'Revenue per MP sebesar Rp ' + s.revPerMp + ' juta per bulan. ';
+        if (s.revPerMp > 40) txt += 'Ini adalah produktivitas tertinggi di antara semua unit. ';
+        else if (s.revPerMp < 10) txt += 'Ini adalah produktivitas terendah, menunjukkan ineffisiensi serius. ';
+        txt += 'Kondisi unit masuk kategori ' + s.condition + ' (' + s.conditionDesc + '). ';
+        return txt;
+    }
+    function getAssumption(s) {
+        if (s.name === 'Pelangi 1') return 'P1 adalah toko yang merangkap Warehouse. Revenue/MP yang sangat rendah (Rp3,9 jt) tidak dapat dibandingkan langsung dengan toko lain karena sebagian MP menangani fungsi warehouse, bukan penjualan langsung. Asumsi: workload warehouse belum dipisahkan dalam data.';
+        if (s.name === 'E-Commerce') return 'Data E-Commerce hanya tersedia sampai Juni 2026 (6 bulan), sementara toko fisik sampai Juli 2026 (7 bulan). Perbandingan YoY dan Rev/MP bersifat indikatif dan perlu validasi dengan data Juli untuk apple-to-apple comparison.';
+        return 'Analisis berdasarkan data Rev/MP dan YoY yang tersedia. Data productivity (%), cost, dan margin tidak tersedia di sumber. Jika tersedia di periode berikutnya, analisis bisa lebih mendalam.';
+    }
+    function getRisk(s) {
+        const risks = [];
+        if (s.status === 'problem') risks.push('Status PROBLEM menunjukkan risiko penurunan kinerja yang signifikan. E-Commerce sebagai channel digital berisiko kehilangan market share.');
+        if (s.status === 'watch') risks.push('Status WATCH menunjukkan potensi eskalasi ke PROBLEM jika tidak ditindaklanjuti dalam 30 hari.');
+        if (s.yoy < -15) risks.push('Penurunan YoY di atas 15% berisiko terhadap target tahunan dan bisa mempengaruhi overall company performance.');
+        if (s.revPerMp < 10) risks.push('Revenue/MP sangat rendah, berisiko tidak menutupi biaya operasional per karyawan. Perlu validasi cost structure.');
+        if (s.name === 'Pelangi 3') risks.push('Produktivitas tertinggi (Rp54,3 jt) berisiko turun jika coverage jam ramai terganggu oleh cost-cutting atau redistribusi MP.');
+        return risks.join(' ') || 'Risiko spesifik belum dapat diidentifikasi dari data yang tersedia. Lanjutkan monitoring rutin.';
+    }
+    function getRecommendation(s) {
+        if (s.name === 'E-Commerce') return '<strong>1)</strong> Segera lengkapi data Juli untuk apple-to-apple comparison. <strong>2)</strong> Bedah funnel: traffic→conversion→orders→AOV. <strong>3)</strong> Petakan workload per MP. <strong>4)</strong> Review response time, cancellation, fulfillment SLA. <strong>5)</strong> Jangan rightsizing sebelum data lengkap dan workload review selesai.';
+        if (s.name === 'Pelangi 1') return '<strong>1)</strong> Workload review wajib — bedah aktivitas/MP, job mapping, roster. <strong>2)</strong> Pisahkan tracking warehouse vs toko. <strong>3)</strong> Jadikan April (peak +154%) sebagai case study. <strong>4)</strong> Pertahankan 8 MP sementara. <strong>5)</strong> Jangan kurangi MP tanpa evidence workload berlebih. Status P1 sebagai toko+warehouse membuat benchmark berbeda.';
+        if (s.name === 'Pelangi 2') return '<strong>1)</strong> Investigasi root cause April (-33,5%) & Juli (-23,7%) — cek stok, conversion, product mix, basket. <strong>2)</strong> Fokus sales execution & coaching. <strong>3)</strong> Pertahankan 5 MP (bukan masalah shortage). <strong>4)</strong> Target quick wins: transaksi, basket, conversion. <strong>5)</strong> Monitor 2 minggu ke depan.';
+        if (s.name === 'Pelangi 3') return '<strong>1)</strong> Pertahankan 15 MP — jangan rusak sales coverage. <strong>2)</strong> Bedah kontribusi Mebel vs Pecah Belah. <strong>3)</strong> Lindungi coverage jam ramai. <strong>4)</strong> Identifikasi penyebab deterioration sejak April (stok? kompetisi? seasonality?). <strong>5)</strong> Jangan kurangi MP — produktivitas tertinggi menunjukkan efisiensi, bukan kelebihan staff.';
+        if (s.name === 'Pelangi 4') return '<strong>1)</strong> Dokumentasikan driver growth (+34,2%) sebagai best practice. <strong>2)</strong> Cari gap growth vs output/MP — optimalkan output per orang. <strong>3)</strong> Pertahankan 6 MP. <strong>4)</strong> Replikasi driver growth ke unit lain (terutama P2 & P3). <strong>5)</strong> Scale productivity secara sistematis.';
+        if (s.name === 'Pelangi 5') return '<strong>1)</strong> Naikkan output per orang untuk tutup gap target. <strong>2)</strong> Scale disiplin operasional. <strong>3)</strong> Pertahankan 9 MP — jangan tambah MP, naikkan produktivitas. <strong>4)</strong> Gunakan sebagai benchmark untuk P2 & P4. <strong>5)</strong> Dokumentasikan SOP yang berhasil.';
+        return 'Lanjutkan monitoring rutin.';
+    }
+    </script>
 </body>
 </html>
