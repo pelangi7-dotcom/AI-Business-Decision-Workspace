@@ -7,66 +7,65 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;}
 body{background:#0f172a;color:#e2e8f0;}
-:root{--primary:#3b82f6;--primary-dark:#2563eb;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--bg:#0f172a;--card:#1e293b;--border:#334155;--text:#e2e8f0;--muted:#94a3b8;}
 .app{min-height:100vh;display:flex;flex-direction:column;}
-.header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header{background:#1e293b;border-bottom:1px solid #334155;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .header h1{font-size:1.1rem;font-weight:700;color:#fff;}
 .nav{display:flex;gap:8px;}
-.nav button{background:transparent;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:.8rem;cursor:pointer;transition:all .2s;}
-.nav button:hover,.nav button.active{background:var(--primary);border-color:var(--primary);}
+.nav button{background:transparent;border:1px solid #334155;color:#e2e8f0;padding:6px 12px;border-radius:6px;font-size:.8rem;cursor:pointer;transition:all .2s;}
+.nav button:hover,.nav button.active{background:#3b82f6;border-color:#3b82f6;}
 .main{flex:1;padding:16px;max-width:800px;margin:0 auto;width:100%;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px;}
 .card h2{font-size:1.1rem;margin-bottom:12px;color:#fff;}
-.card h3{font-size:.95rem;margin:16px 0 8px;color:var(--muted);}
-label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-input,textarea,select{width:100%;background:#0f172a;border:1px solid var(--border);color:var(--text);padding:12px;border-radius:8px;font-size:.95rem;transition:border .2s;}
-input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary);}
+.card h3{font-size:.95rem;margin:16px 0 8px;color:#94a3b8;}
+label{display:block;font-size:.8rem;color:#94a3b8;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+input,textarea,select{width:100%;background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:12px;border-radius:8px;font-size:.95rem;transition:border .2s;}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#3b82f6;}
 textarea{min-height:120px;resize:vertical;line-height:1.5;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:8px;border:none;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%;margin-top:12px;}
-.btn-primary{background:var(--primary);color:#fff;}
-.btn-primary:hover{background:var(--primary-dark);}
-.btn-success{background:var(--success);color:#fff;}
-.btn-warning{background:var(--warning);color:#000;}
-.btn-danger{background:var(--danger);color:#fff;}
-.btn-secondary{background:var(--border);color:var(--text);}
+.btn-primary{background:#3b82f6;color:#fff;}
+.btn-primary:hover{background:#2563eb;}
+.btn-success{background:#10b981;color:#fff;}
+.btn-warning{background:#f59e0b;color:#000;}
+.btn-danger{background:#ef4444;color:#fff;}
+.btn-secondary{background:#334155;color:#e2e8f0;}
 .btn-sm{padding:8px 14px;font-size:.8rem;width:auto;}
 .btn-group{display:flex;gap:8px;flex-wrap:wrap;}
 .btn-group .btn{width:auto;flex:1;min-width:120px;}
-.hint{font-size:.8rem;color:var(--muted);margin-top:6px;}
+.hint{font-size:.8rem;color:#94a3b8;margin-top:6px;}
 .privacy-warning{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;padding:12px;border-radius:8px;font-size:.75rem;margin:12px 0;}
-.step-badge{display:inline-block;background:var(--primary);color:#fff;font-size:.7rem;padding:2px 8px;border-radius:10px;margin-right:6px;}
+.step-badge{display:inline-block;background:#3b82f6;color:#fff;font-size:.7rem;padding:2px 8px;border-radius:10px;margin-right:6px;}
 .progress-track{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;padding:12px;background:rgba(30,41,59,.5);border-radius:8px;}
-.progress-step{font-size:.7rem;padding:4px 10px;border-radius:6px;background:var(--border);color:var(--muted);white-space:nowrap;}
-.progress-step.completed{background:var(--success);color:#fff;}
-.progress-step.active{background:var(--primary);color:#fff;}
-.progress-step.waiting{background:var(--warning);color:#000;}
+.progress-step{font-size:.7rem;padding:4px 10px;border-radius:6px;background:#334155;color:#94a3b8;white-space:nowrap;}
+.progress-step.completed{background:#10b981;color:#fff;}
+.progress-step.active{background:#3b82f6;color:#fff;}
+.progress-step.waiting{background:#f59e0b;color:#000;}
 .case-list{display:flex;flex-direction:column;gap:10px;}
-.case-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .2s;}
-.case-item:hover{border-color:var(--primary);}
+.case-item{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .2s;}
+.case-item:hover{border-color:#3b82f6;}
 .case-item .info{flex:1;min-width:0;}
 .case-item .name{font-weight:600;color:#fff;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.case-item .meta{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.case-item .meta{font-size:.75rem;color:#94a3b8;margin-top:2px;}
 .case-item .actions{display:flex;gap:6px;flex-shrink:0;margin-left:8px;}
 .case-item .actions button{padding:4px 10px;font-size:.7rem;border-radius:4px;border:none;cursor:pointer;}
-.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty{text-align:center;padding:40px 20px;color:#94a3b8;}
 .empty-icon{font-size:3rem;margin-bottom:12px;opacity:.5;}
-.prompt-box{background:#0f172a;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:"SF Mono",monospace;font-size:.8rem;line-height:1.6;color:#a5b4fc;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto;margin:12px 0;position:relative;}
-.copy-btn{position:absolute;top:8px;right:8px;background:var(--primary);color:#fff;border:none;padding:4px 10px;border-radius:4px;font-size:.7rem;cursor:pointer;}
+.prompt-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;font-family:"SF Mono",monospace;font-size:.8rem;line-height:1.6;color:#a5b4fc;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto;margin:12px 0;position:relative;}
+.copy-btn{position:absolute;top:8px;right:8px;background:#3b82f6;color:#fff;border:none;padding:4px 10px;border-radius:4px;font-size:.7rem;cursor:pointer;}
 .section-title{font-size:1.2rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.fact-box{background:rgba(16,185,129,.1);border-left:3px solid var(--success);padding:12px;border-radius:0 8px 8px 0;margin:8px 0;}
-.assumption-box{background:rgba(245,158,11,.1);border-left:3px solid var(--warning);padding:12px;border-radius:0 8px 8px 0;margin:8px 0;}
-.question-box{background:rgba(59,130,246,.1);border-left:3px solid var(--primary);padding:12px;border-radius:0 8px 8px 0;margin:8px 0;}
+.fact-box{background:rgba(16,185,129,.1);border-left:3px solid #10b981;padding:12px;border-radius:0 8px 8px 0;margin:8px 0;}
+.assumption-box{background:rgba(245,158,11,.1);border-left:3px solid #f59e0b;padding:12px;border-radius:0 8px 8px 0;margin:8px 0;}
+.question-box{background:rgba(59,130,246,.1);border-left:3px solid #3b82f6;padding:12px;border-radius:0 8px 8px 0;margin:8px 0;}
 .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:600;margin-right:4px;}
 .tag-fact{background:rgba(16,185,129,.2);color:#34d399;}
 .tag-assumption{background:rgba(245,158,11,.2);color:#fbbf24;}
 .tag-question{background:rgba(59,130,246,.2);color:#60a5fa;}
-.result-display{background:#0f172a;border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0;white-space:pre-wrap;word-break:break-word;line-height:1.6;font-size:.85rem;max-height:400px;overflow-y:auto;}
+.result-display{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;margin:12px 0;white-space:pre-wrap;word-break:break-word;line-height:1.6;font-size:.85rem;max-height:400px;overflow-y:auto;}
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
-.stat-value{font-size:1.5rem;font-weight:700;color:var(--primary);}
-.stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;}
+.stat-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;text-align:center;}
+.stat-value{font-size:1.5rem;font-weight:700;color:#3b82f6;}
+.stat-label{font-size:.75rem;color:#94a3b8;margin-top:4px;}
 .hidden{display:none !important;}
-.file-status{margin-top:8px;font-size:.8rem;color:var(--success);}
+.file-status{margin-top:8px;font-size:.8rem;color:#10b981;}
 @media(min-width:768px){
 .main{padding:24px;max-width:900px;}
 .stats-grid{grid-template-columns:repeat(4,1fr);}
@@ -79,13 +78,13 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="app">
 <div class="header">
 <div style="display:flex;align-items:center;">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);margin-right:8px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#3b82f6;margin-right:8px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
 <h1>AI Business Decision Workspace</h1>
 </div>
 <div class="nav">
-<button id="nav-dashboard" class="active" onclick="showView('dashboard')">Dashboard</button>
-<button id="nav-new" onclick="showView('input')">New Case</button>
-<button id="nav-history" onclick="showView('history')">History</button>
+<button id="nav-dashboard" class="active">Dashboard</button>
+<button id="nav-new">New Case</button>
+<button id="nav-history">History</button>
 </div>
 </div>
 
@@ -107,8 +106,8 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="card">
 <h2>Quick Actions</h2>
 <div class="btn-group">
-<button class="btn btn-primary" onclick="showView('input')">Create New Case</button>
-<button class="btn btn-secondary" onclick="showView('history')">View History</button>
+<button class="btn btn-primary" id="btn-dash-new">Create New Case</button>
+<button class="btn btn-secondary" id="btn-dash-history">View History</button>
 </div>
 </div>
 <div class="privacy-warning">
@@ -123,7 +122,7 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <h2>Enter Data / Case</h2>
 <div style="margin-bottom:16px;">
 <label>Upload File (Optional)</label>
-<input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.docx,.pptx,.txt,.png,.jpg,.jpeg,.webp" onchange="handleFileUpload(this)">
+<input type="file" id="file-input" accept=".xlsx,.xls,.csv,.pdf,.docx,.pptx,.txt,.png,.jpg,.jpeg,.webp">
 <p class="hint">Supported: XLSX, XLS, CSV, PDF, DOCX, PPTX, TXT, Images. Text files can be read directly. For other formats, please paste content manually below.</p>
 <div id="file-status" class="file-status"></div>
 </div>
@@ -139,7 +138,7 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="privacy-warning">
 <strong>Reminder:</strong> Do not enter passwords, PII, or unauthorized sensitive data.
 </div>
-<button class="btn btn-primary" onclick="analyzeCase()">Analyze Case</button>
+<button class="btn btn-primary" id="btn-analyze">Analyze Case</button>
 </div>
 </div>
 
@@ -176,7 +175,7 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <h3>Data Gaps</h3>
 <div id="orient-gaps" style="line-height:1.6;"></div>
 </div>
-<button class="btn btn-success" onclick="startWorkflow()">Start Workflow</button>
+<button class="btn btn-success" id="btn-start-workflow">Start Workflow</button>
 </div>
 </div>
 
@@ -186,19 +185,19 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="progress-track" id="step1-progress"></div>
 <div class="card">
 <h2>Generate Prompt</h2>
-<p style="font-size:.85rem;color:var(--muted);margin-bottom:12px;">Click Generate to create a prompt based on your case data. Copy it, paste into Perplexity, then paste the result back.</p>
+<p style="font-size:.85rem;color:#94a3b8;margin-bottom:12px;">Click Generate to create a prompt based on your case data. Copy it, paste into Perplexity, then paste the result back.</p>
 <div class="btn-group">
-<button class="btn btn-primary btn-sm" onclick="generatePrompt('perplexity')">Generate Prompt</button>
-<button class="btn btn-secondary btn-sm" onclick="copyPrompt('perplexity')">Copy Prompt</button>
+<button class="btn btn-primary btn-sm" id="btn-gen-perplexity">Generate Prompt</button>
+<button class="btn btn-secondary btn-sm" id="btn-copy-perplexity">Copy Prompt</button>
 </div>
-<div class="prompt-box" id="prompt-perplexity" style="display:none;"><button class="copy-btn" onclick="copyPrompt('perplexity')">Copy</button><div id="prompt-text-perplexity"></div></div>
+<div class="prompt-box" id="prompt-perplexity" style="display:none;"><button class="copy-btn" id="btn-copybox-perplexity">Copy</button><div id="prompt-text-perplexity"></div></div>
 </div>
 <div class="card">
 <h2>Paste Perplexity Result</h2>
 <textarea id="result-perplexity" placeholder="Paste Perplexity research result here..."></textarea>
 <div class="btn-group">
-<button class="btn btn-success btn-sm" onclick="saveStep('research')">Save & Continue</button>
-<button class="btn btn-secondary btn-sm" onclick="skipStep('research')">Skip This Step</button>
+<button class="btn btn-success btn-sm" id="btn-save-perplexity">Save & Continue</button>
+<button class="btn btn-secondary btn-sm" id="btn-skip-perplexity">Skip This Step</button>
 </div>
 </div>
 </div>
@@ -210,17 +209,17 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="card">
 <h2>Generate Analysis Prompt</h2>
 <div class="btn-group">
-<button class="btn btn-primary btn-sm" onclick="generatePrompt('analysis')">Generate Prompt</button>
-<button class="btn btn-secondary btn-sm" onclick="copyPrompt('analysis')">Copy Prompt</button>
+<button class="btn btn-primary btn-sm" id="btn-gen-analysis">Generate Prompt</button>
+<button class="btn btn-secondary btn-sm" id="btn-copy-analysis">Copy Prompt</button>
 </div>
-<div class="prompt-box" id="prompt-analysis" style="display:none;"><button class="copy-btn" onclick="copyPrompt('analysis')">Copy</button><div id="prompt-text-analysis"></div></div>
+<div class="prompt-box" id="prompt-analysis" style="display:none;"><button class="copy-btn" id="btn-copybox-analysis">Copy</button><div id="prompt-text-analysis"></div></div>
 </div>
 <div class="card">
 <h2>Paste ChatGPT Analysis</h2>
 <textarea id="result-analysis" placeholder="Paste ChatGPT business analysis here..."></textarea>
 <div class="btn-group">
-<button class="btn btn-success btn-sm" onclick="saveStep('analysis')">Save & Continue</button>
-<button class="btn btn-secondary btn-sm" onclick="skipStep('analysis')">Skip This Step</button>
+<button class="btn btn-success btn-sm" id="btn-save-analysis">Save & Continue</button>
+<button class="btn btn-secondary btn-sm" id="btn-skip-analysis">Skip This Step</button>
 </div>
 </div>
 </div>
@@ -232,17 +231,17 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="card">
 <h2>Generate Challenge Prompt</h2>
 <div class="btn-group">
-<button class="btn btn-primary btn-sm" onclick="generatePrompt('challenge')">Generate Prompt</button>
-<button class="btn btn-secondary btn-sm" onclick="copyPrompt('challenge')">Copy Prompt</button>
+<button class="btn btn-primary btn-sm" id="btn-gen-challenge">Generate Prompt</button>
+<button class="btn btn-secondary btn-sm" id="btn-copy-challenge">Copy Prompt</button>
 </div>
-<div class="prompt-box" id="prompt-challenge" style="display:none;"><button class="copy-btn" onclick="copyPrompt('challenge')">Copy</button><div id="prompt-text-challenge"></div></div>
+<div class="prompt-box" id="prompt-challenge" style="display:none;"><button class="copy-btn" id="btn-copybox-challenge">Copy</button><div id="prompt-text-challenge"></div></div>
 </div>
 <div class="card">
 <h2>Paste Gemini Result</h2>
 <textarea id="result-challenge" placeholder="Paste Gemini critical challenge result here..."></textarea>
 <div class="btn-group">
-<button class="btn btn-success btn-sm" onclick="saveStep('challenge')">Save & Continue</button>
-<button class="btn btn-secondary btn-sm" onclick="skipStep('challenge')">Skip This Step</button>
+<button class="btn btn-success btn-sm" id="btn-save-challenge">Save & Continue</button>
+<button class="btn btn-secondary btn-sm" id="btn-skip-challenge">Skip This Step</button>
 </div>
 </div>
 </div>
@@ -254,17 +253,17 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="card">
 <h2>Generate Final Synthesis Prompt</h2>
 <div class="btn-group">
-<button class="btn btn-primary btn-sm" onclick="generatePrompt('synthesis')">Generate Prompt</button>
-<button class="btn btn-secondary btn-sm" onclick="copyPrompt('synthesis')">Copy Prompt</button>
+<button class="btn btn-primary btn-sm" id="btn-gen-synthesis">Generate Prompt</button>
+<button class="btn btn-secondary btn-sm" id="btn-copy-synthesis">Copy Prompt</button>
 </div>
-<div class="prompt-box" id="prompt-synthesis" style="display:none;"><button class="copy-btn" onclick="copyPrompt('synthesis')">Copy</button><div id="prompt-text-synthesis"></div></div>
+<div class="prompt-box" id="prompt-synthesis" style="display:none;"><button class="copy-btn" id="btn-copybox-synthesis">Copy</button><div id="prompt-text-synthesis"></div></div>
 </div>
 <div class="card">
 <h2>Paste Final Synthesis</h2>
 <textarea id="result-synthesis" placeholder="Paste ChatGPT final synthesis here..."></textarea>
 <div class="btn-group">
-<button class="btn btn-success btn-sm" onclick="saveStep('synthesis')">Save & Continue</button>
-<button class="btn btn-secondary btn-sm" onclick="skipStep('synthesis')">Skip This Step</button>
+<button class="btn btn-success btn-sm" id="btn-save-synthesis">Save & Continue</button>
+<button class="btn btn-secondary btn-sm" id="btn-skip-synthesis">Skip This Step</button>
 </div>
 </div>
 </div>
@@ -276,17 +275,17 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="card">
 <h2>Generate Presentation Prompt</h2>
 <div class="btn-group">
-<button class="btn btn-primary btn-sm" onclick="generatePrompt('presentation')">Generate Prompt</button>
-<button class="btn btn-secondary btn-sm" onclick="copyPrompt('presentation')">Copy Prompt</button>
+<button class="btn btn-primary btn-sm" id="btn-gen-presentation">Generate Prompt</button>
+<button class="btn btn-secondary btn-sm" id="btn-copy-presentation">Copy Prompt</button>
 </div>
-<div class="prompt-box" id="prompt-presentation" style="display:none;"><button class="copy-btn" onclick="copyPrompt('presentation')">Copy</button><div id="prompt-text-presentation"></div></div>
+<div class="prompt-box" id="prompt-presentation" style="display:none;"><button class="copy-btn" id="btn-copybox-presentation">Copy</button><div id="prompt-text-presentation"></div></div>
 </div>
 <div class="card">
 <h2>Paste Claude Result / Notes</h2>
 <textarea id="result-presentation" placeholder="Paste Claude presentation result or notes here..."></textarea>
 <div class="btn-group">
-<button class="btn btn-success btn-sm" onclick="saveStep('presentation')">Save & Continue</button>
-<button class="btn btn-secondary btn-sm" onclick="skipStep('presentation')">Skip This Step</button>
+<button class="btn btn-success btn-sm" id="btn-save-presentation">Save & Continue</button>
+<button class="btn btn-secondary btn-sm" id="btn-skip-presentation">Skip This Step</button>
 </div>
 </div>
 </div>
@@ -298,17 +297,17 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="card">
 <h2>Generate Final Diagnostic Prompt</h2>
 <div class="btn-group">
-<button class="btn btn-primary btn-sm" onclick="generatePrompt('final')">Generate Prompt</button>
-<button class="btn btn-secondary btn-sm" onclick="copyPrompt('final')">Copy Prompt</button>
+<button class="btn btn-primary btn-sm" id="btn-gen-final">Generate Prompt</button>
+<button class="btn btn-secondary btn-sm" id="btn-copy-final">Copy Prompt</button>
 </div>
-<div class="prompt-box" id="prompt-final" style="display:none;"><button class="copy-btn" onclick="copyPrompt('final')">Copy</button><div id="prompt-text-final"></div></div>
+<div class="prompt-box" id="prompt-final" style="display:none;"><button class="copy-btn" id="btn-copybox-final">Copy</button><div id="prompt-text-final"></div></div>
 </div>
 <div class="card">
 <h2>Paste Final Decision Brief</h2>
 <textarea id="result-final" placeholder="Paste ChatGPT final decision brief here..."></textarea>
 <div class="btn-group">
-<button class="btn btn-success btn-sm" onclick="saveStep('final')">Save & Complete</button>
-<button class="btn btn-secondary btn-sm" onclick="skipStep('final')">Skip This Step</button>
+<button class="btn btn-success btn-sm" id="btn-save-final">Save & Complete</button>
+<button class="btn btn-secondary btn-sm" id="btn-skip-final">Skip This Step</button>
 </div>
 </div>
 </div>
@@ -319,12 +318,12 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="progress-track" id="complete-progress"></div>
 <div class="card">
 <h2>All Workflow Steps Completed</h2>
-<p style="color:var(--muted);margin-bottom:16px;">Your case has been processed through all AI workflow stages.</p>
+<p style="color:#94a3b8;margin-bottom:16px;">Your case has been processed through all AI workflow stages.</p>
 <div class="btn-group">
-<button class="btn btn-primary btn-sm" onclick="viewCaseSummary()">View Summary</button>
-<button class="btn btn-secondary btn-sm" onclick="exportCase()">Export Case (JSON)</button>
-<button class="btn btn-secondary btn-sm" onclick="exportDiagnostic()">Export Diagnostic (MD)</button>
-<button class="btn btn-success btn-sm" onclick="showView('input')">Create New Case</button>
+<button class="btn btn-primary btn-sm" id="btn-view-summary">View Summary</button>
+<button class="btn btn-secondary btn-sm" id="btn-export-case">Export Case (JSON)</button>
+<button class="btn btn-secondary btn-sm" id="btn-export-md">Export Diagnostic (MD)</button>
+<button class="btn btn-success btn-sm" id="btn-new-from-complete">Create New Case</button>
 </div>
 </div>
 <div id="summary-content"></div>
@@ -335,10 +334,10 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div class="section-title">Case History</div>
 <div class="card">
 <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-<input type="text" id="history-search" placeholder="Search cases..." oninput="renderHistory()" style="flex:1;margin-top:0;min-width:200px;">
+<input type="text" id="history-search" placeholder="Search cases..." style="flex:1;margin-top:0;min-width:200px;">
 <div class="btn-group">
-<button class="btn btn-secondary btn-sm" onclick="importCase()">Import Case</button>
-<button class="btn btn-danger btn-sm" onclick="clearAllCases()">Clear All</button>
+<button class="btn btn-secondary btn-sm" id="btn-import">Import Case</button>
+<button class="btn btn-danger btn-sm" id="btn-clear-all">Clear All</button>
 </div>
 </div>
 </div>
@@ -352,10 +351,10 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 <div id="summary-sections"></div>
 <div class="card">
 <div class="btn-group">
-<button class="btn btn-secondary btn-sm" onclick="showView('history')">Back to History</button>
-<button class="btn btn-primary btn-sm" onclick="continueCase()">Continue Case</button>
-<button class="btn btn-secondary btn-sm" onclick="exportCase()">Export JSON</button>
-<button class="btn btn-secondary btn-sm" onclick="exportDiagnostic()">Export MD</button>
+<button class="btn btn-secondary btn-sm" id="btn-back-history">Back to History</button>
+<button class="btn btn-primary btn-sm" id="btn-continue-case">Continue Case</button>
+<button class="btn btn-secondary btn-sm" id="btn-export-json-summary">Export JSON</button>
+<button class="btn btn-secondary btn-sm" id="btn-export-md-summary">Export MD</button>
 </div>
 </div>
 </div>
@@ -363,635 +362,446 @@ textarea{min-height:120px;resize:vertical;line-height:1.5;}
 </div>
 </div>
 
-<input type="file" id="import-file" accept=".json" class="hidden" onchange="handleImport(this)">
+<input type="file" id="import-file" accept=".json" class="hidden">
 
 <script>
+(function(){
+"use strict";
 
-// ========== STATE ==========
 var currentCaseId = null;
 var cases = {};
-var STEPS = ['input','research','analysis','challenge','synthesis','presentation','final'];
-var STEP_LABELS = {
-  input: 'INPUT',
-  research: 'RESEARCH',
-  analysis: 'ANALYSIS',
-  challenge: 'CHALLENGE',
-  synthesis: 'SYNTHESIS',
-  presentation: 'PRESENTATION',
-  final: 'FINAL DECISION'
-};
-var STEP_VIEWS = {
-  research: 'view-step1',
-  analysis: 'view-step2',
-  challenge: 'view-step3',
-  synthesis: 'view-step4',
-  presentation: 'view-step5',
-  final: 'view-step6'
-};
+var STEPS = ["input","research","analysis","challenge","synthesis","presentation","final"];
+var STEP_LABELS = {input:"INPUT",research:"RESEARCH",analysis:"ANALYSIS",challenge:"CHALLENGE",synthesis:"SYNTHESIS",presentation:"PRESENTATION",final:"FINAL DECISION"};
+var STEP_VIEWS = {research:"view-step1",analysis:"view-step2",challenge:"view-step3",synthesis:"view-step4",presentation:"view-step5",final:"view-step6"};
 
-// ========== INIT ==========
-function init(){
-  loadCases();
-  updateDashboard();
-  renderHistory();
+function $(id){ return document.getElementById(id); }
+
+function showView(viewId){
+  var views = document.querySelectorAll('[id^="view-"]');
+  for(var i=0;i<views.length;i++) views[i].classList.add("hidden");
+  var target = $("view-"+viewId);
+  if(target) target.classList.remove("hidden");
+  var navBtns = document.querySelectorAll(".nav button");
+  for(var i=0;i<navBtns.length;i++) navBtns[i].classList.remove("active");
+  var navId = "nav-" + (viewId==="input"?"new":(viewId==="orientation"||viewId.indexOf("step")===0||viewId==="complete"||viewId==="summary")?"dashboard":viewId);
+  var navBtn = $(navId);
+  if(navBtn) navBtn.classList.add("active");
+  window.scrollTo(0,0);
 }
 
 function loadCases(){
   try{
-    var stored = localStorage.getItem('ai_business_cases');
+    var stored = localStorage.getItem("ai_business_cases");
     if(stored) cases = JSON.parse(stored);
   }catch(e){ cases = {}; }
 }
 
 function saveCases(){
-  localStorage.setItem('ai_business_cases', JSON.stringify(cases));
+  try{
+    localStorage.setItem("ai_business_cases", JSON.stringify(cases));
+  }catch(e){ console.log("localStorage error:", e); }
 }
 
 function generateId(){
-  return 'case_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2,5);
+  return "case_" + Date.now().toString(36) + "_" + Math.random().toString(36).substr(2,5);
 }
 
-// ========== NAVIGATION ==========
-function showView(viewId){
-  var views = document.querySelectorAll('[id^="view-"]');
-  for(var i=0;i<views.length;i++) views[i].classList.add('hidden');
-  document.getElementById('view-' + viewId).classList.remove('hidden');
-  var navBtns = document.querySelectorAll('.nav button');
-  for(var i=0;i<navBtns.length;i++) navBtns[i].classList.remove('active');
-  var navId = 'nav-' + (viewId === 'input' ? 'new' : (viewId === 'orientation' || viewId.indexOf('step')===0 || viewId === 'complete' || viewId === 'summary') ? 'dashboard' : viewId);
-  var navBtn = document.getElementById(navId);
-  if(navBtn) navBtn.classList.add('active');
-  window.scrollTo(0,0);
-}
-
-// ========== FILE UPLOAD ==========
-function handleFileUpload(input){
-  var file = input.files[0];
-  if(!file) return;
-  var status = document.getElementById('file-status');
-  var textarea = document.getElementById('case-data');
-  var ext = file.name.split('.').pop().toLowerCase();
-  var textExts = ['txt','csv','md','json','html','xml','js','css','py'];
-
-  status.textContent = 'File selected: ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
-
-  if(textExts.indexOf(ext) !== -1 || file.type.indexOf('text/') === 0){
-    var reader = new FileReader();
-    reader.onload = function(e){
-      textarea.value = e.target.result;
-      status.textContent = 'File read successfully: ' + file.name;
-    };
-    reader.readAsText(file);
-  } else if(file.type.indexOf('image/') === 0){
-    textarea.value = '[Image uploaded: ' + file.name + ']\n\nPlease describe the image content or paste any text extracted from it here.';
-    status.textContent = 'Image selected. Please describe content in the text area below.';
-  } else {
-    textarea.value = '[File uploaded: ' + file.name + ' (' + ext.toUpperCase() + ')]\n\nThis file format cannot be read directly in the browser. Please copy and paste the relevant content from the file into this text area.';
-    status.textContent = ext.toUpperCase() + ' file selected. Please paste content manually below.';
-  }
-}
-
-// ========== ANALYZE CASE ==========
-function analyzeCase(){
-  var data = document.getElementById('case-data').value.trim();
-  var objective = document.getElementById('case-objective').value.trim();
-
-  if(!data){
-    alert('Please enter case data.');
-    return;
-  }
-
-  var caseId = generateId();
-  var caseName = data.split('\n')[0].substring(0,60) || 'Untitled Case';
-  var now = new Date().toISOString();
-
-  cases[caseId] = {
-    id: caseId,
-    name: caseName,
-    data: data,
-    objective: objective,
-    createdAt: now,
-    updatedAt: now,
-    status: 'orientation',
-    stepStatus: {
-      input: 'completed',
-      research: 'not_started',
-      analysis: 'not_started',
-      challenge: 'not_started',
-      synthesis: 'not_started',
-      presentation: 'not_started',
-      final: 'not_started'
-    },
-    orientation: generateOrientation(data, objective),
-    results: {}
-  };
-
-  currentCaseId = caseId;
-  saveCases();
-  renderOrientation();
-  showView('orientation');
-}
-
-function generateOrientation(data, objective){
-  var lines = data.split('\n').filter(function(l){return l.trim();});
-  var facts = [];
-  var assumptions = [];
-  var questions = [];
-  var areas = [];
-  var gaps = [];
-
-  var text = data.toLowerCase();
-
-  if(text.indexOf('omzet')!==-1 || text.indexOf('revenue')!==-1 || text.indexOf('sales')!==-1 || text.indexOf('turnover')!==-1){
-    areas.push('Revenue Analysis');
-    gaps.push('Revenue breakdown by product/segment');
-  }
-  if(text.indexOf('margin')!==-1 || text.indexOf('profit')!==-1 || text.indexOf('cost')!==-1){
-    areas.push('Profitability & Cost Structure');
-    gaps.push('Detailed cost breakdown (COGS, OPEX)');
-  }
-  if(text.indexOf('kompetitor')!==-1 || text.indexOf('competitor')!==-1 || text.indexOf('market')!==-1){
-    areas.push('Competitive Position');
-    gaps.push('Competitor pricing and market share data');
-  }
-  if(text.indexOf('karyawan')!==-1 || text.indexOf('manpower')!==-1 || text.indexOf('staff')!==-1 || text.indexOf('employee')!==-1){
-    areas.push('Workforce & Productivity');
-    gaps.push('Headcount, productivity metrics, turnover rates');
-  }
-  if(text.indexOf('harga')!==-1 || text.indexOf('price')!==-1 || text.indexOf('pricing')!==-1){
-    areas.push('Pricing Strategy');
-    gaps.push('Price elasticity data, competitor pricing');
-  }
-  if(text.indexOf('produk')!==-1 || text.indexOf('product')!==-1){
-    areas.push('Product Mix & Portfolio');
-    gaps.push('Product-level profitability, SKU performance');
-  }
-  if(text.indexOf('lead')!==-1 || text.indexOf('conversion')!==-1 || text.indexOf('marketing')!==-1){
-    areas.push('Sales Funnel & Marketing');
-    gaps.push('Lead volume, conversion rates, CAC');
-  }
-  if(areas.length === 0){
-    areas.push('General Business Performance');
-    gaps.push('Financial statements, operational data');
-  }
-
-  for(var i=0;i<lines.length;i++){
-    var line = lines[i];
-    if(/\d+%?|\d+\.\d+|\$\d+/.test(line)){
-      facts.push(line.trim());
-    } else if(line.toLowerCase().indexOf('mungkin')!==-1 || line.toLowerCase().indexOf('maybe')!==-1 || line.toLowerCase().indexOf('probably')!==-1 || line.toLowerCase().indexOf('sepertinya')!==-1){
-      assumptions.push(line.trim());
-    }
-  }
-
-  if(facts.length === 0) facts.push('Case data provided (see full input)');
-  if(assumptions.length === 0) assumptions.push('Initial assumptions will be formed during analysis');
-
-  questions.push('What is the primary root cause of the issue?');
-  questions.push('What external factors are influencing this situation?');
-  questions.push('What data is missing to make a confident decision?');
-  if(!objective) questions.push('What is the specific objective of this investigation?');
-
-  return {
-    facts: facts.slice(0,8),
-    assumptions: assumptions.slice(0,5),
-    questions: questions,
-    areas: areas,
-    gaps: gaps,
-    overview: {
-      name: lines[0] ? lines[0].substring(0,80) : 'Business Case',
-      objective: objective || 'To be determined during workflow',
-      keyData: facts.slice(0,3).join('; '),
-      initialProblem: lines.find(function(l){return l.length > 20;}) ? lines.find(function(l){return l.length > 20;}).substring(0,200) : 'See full case data'
-    }
-  };
-}
-
-function renderOrientation(){
-  var c = cases[currentCaseId];
-  if(!c) return;
-  var o = c.orientation;
-
-  document.getElementById('orient-name').textContent = o.overview.name;
-  document.getElementById('orient-facts').innerHTML = o.facts.map(function(f){return '<div style="margin:4px 0;">&#8226; ' + escapeHtml(f) + '</div>';}).join('');
-  document.getElementById('orient-assumptions').innerHTML = o.assumptions.map(function(a){return '<div style="margin:4px 0;">&#8226; ' + escapeHtml(a) + '</div>';}).join('');
-  document.getElementById('orient-questions').innerHTML = o.questions.map(function(q){return '<div style="margin:4px 0;">&#8226; ' + escapeHtml(q) + '</div>';}).join('');
-  document.getElementById('orient-overview').innerHTML = 
-    '<strong>Objective:</strong> ' + escapeHtml(o.overview.objective) + '<br>' +
-    '<strong>Key Data:</strong> ' + escapeHtml(o.overview.keyData) + '<br>' +
-    '<strong>Initial Problem:</strong> ' + escapeHtml(o.overview.initialProblem);
-  document.getElementById('orient-areas').innerHTML = o.areas.map(function(a){return '<span class="tag tag-fact">' + escapeHtml(a) + '</span>';}).join(' ');
-  document.getElementById('orient-gaps').innerHTML = o.gaps.map(function(g){return '<div style="margin:4px 0;">&#8226; ' + escapeHtml(g) + '</div>';}).join('');
-
-  renderProgress('orientation-progress', c);
-}
-
-function startWorkflow(){
-  var c = cases[currentCaseId];
-  if(!c) return;
-  c.status = 'research';
-  c.stepStatus.research = 'in_progress';
-  c.updatedAt = new Date().toISOString();
-  saveCases();
-  loadStep('research');
-  showView('step1');
-}
-
-// ========== WORKFLOW STEPS ==========
-function loadStep(step){
-  var c = cases[currentCaseId];
-  if(!c) return;
-  var resultArea = document.getElementById('result-' + step);
-  if(resultArea && c.results[step]) resultArea.value = c.results[step];
-
-  var promptBoxes = document.querySelectorAll('.prompt-box');
-  for(var i=0;i<promptBoxes.length;i++) promptBoxes[i].style.display = 'none';
-
-  var viewId = STEP_VIEWS[step];
-  if(viewId) renderProgress(viewId.replace('view-','') + '-progress', c);
-}
-
-function renderProgress(elementId, c){
-  var el = document.getElementById(elementId);
-  if(!el) return;
-  var html = '';
-  for(var i=0;i<STEPS.length;i++){
-    var step = STEPS[i];
-    var cls = 'progress-step';
-    var status = c.stepStatus[step];
-    if(status === 'completed') cls += ' completed';
-    else if(status === 'in_progress') cls += ' active';
-    else if(status === 'waiting') cls += ' waiting';
-    html += '<div class="' + cls + '">' + STEP_LABELS[step] + '</div>';
-  }
-  el.innerHTML = html;
-}
-
-function generatePrompt(step){
-  var c = cases[currentCaseId];
-  if(!c) return;
-  var prompt = '';
-
-  if(step === 'perplexity'){
-    prompt = "You are a research analyst. I need external evidence and market research for the following business case.\n\nCASE DATA:\n" + c.data + "\n\nOBJECTIVE:\n" + (c.objective || 'Identify key issues and provide external context') + "\n\nPlease provide:\n1. Relevant industry benchmarks and market data\n2. Competitor information (if applicable)\n3. Regulatory or macroeconomic factors\n4. External evidence that could explain the situation\n5. Any relevant market trends\n\nBe factual. Cite sources where possible. If information is uncertain, state the confidence level.";
-  } else if(step === 'analysis'){
-    prompt = "You are a senior business analyst. Analyze the following case using the provided research.\n\nORIGINAL CASE:\n" + c.data + "\n\nOBJECTIVE:\n" + (c.objective || 'Analyze the business situation') + "\n\nRESEARCH / EXTERNAL EVIDENCE:\n" + (c.results.research || '[No research data yet - analyze based on case data]') + "\n\nPlease analyze:\n- What is happening?\n- Why is it happening? (Root cause analysis)\n- Business impact\n- Distinguish FACTS from ASSUMPTIONS\n- Analyze available metrics: Revenue, YoY growth, Manpower, Productivity, Cost, Margin, Pricing, Product Mix, Leads, Conversion (only if data is present)\n- Identify patterns and anomalies\n- List strategic options\n- Identify risks and unknowns\n\nOutput structure:\n1. What is happening?\n2. Why? (Root cause)\n3. Business impact\n4. Options\n5. Risks / Unknowns";
-  } else if(step === 'challenge'){
-    prompt = "You are an independent critical reviewer. Review the following business analysis and challenge its validity.\n\nORIGINAL CASE:\n" + c.data + "\n\nRESEARCH:\n" + (c.results.research || '[No research data]') + "\n\nANALYSIS TO CHALLENGE:\n" + (c.results.analysis || '[No analysis yet]') + "\n\nYour task:\n- Identify unsupported assumptions\n- Find logical errors or weak evidence\n- Propose alternative explanations\n- Point out missing data or overstatements\n- Identify blind spots and risks\n\nIMPORTANT: Do not disagree just for the sake of disagreement. If the analysis is strong and well-supported, confirm its validity. If there are problems, explain them clearly and suggest corrections.\n\nOutput:\n1. Valid points confirmed\n2. Issues found (if any)\n3. Alternative explanations (if any)\n4. Missing data needed\n5. Overall assessment";
-  } else if(step === 'synthesis'){
-    prompt = "You are an Executive Analyst. Synthesize all previous work into a final diagnosis.\n\nORIGINAL CASE:\n" + c.data + "\n\nRESEARCH:\n" + (c.results.research || '[No research]') + "\n\nANALYSIS:\n" + (c.results.analysis || '[No analysis]') + "\n\nCRITICAL CHALLENGE:\n" + (c.results.challenge || '[No challenge review]') + "\n\nYour task:\n- Combine all evidence\n- Resolve any contradictions\n- Reject unsupported assumptions\n- Retain only strong, evidence-based conclusions\n- Determine root cause based on evidence\n- Measure business impact\n- Create strategic options with trade-offs\n- Provide clear recommendation\n\nDO NOT use voting between sources. Use data quality, evidence strength, and logical consistency.\n\nOutput structure:\n## EXECUTIVE DIAGNOSIS\n\n### 1. What is happening?\n### 2. Why?\n### 3. Business impact\n### 4. Root cause\n### 5. Options\n### 6. Risks / Unknowns\n### 7. Recommended direction\n### 8. Decision required";
-  } else if(step === 'presentation'){
-    prompt = "You are preparing an executive presentation for the business owner. Convert the following synthesis into an owner-level presentation.\n\nFINAL SYNTHESIS:\n" + (c.results.synthesis || '[No synthesis yet]') + "\n\nRequirements:\n- Simple, sharp, commercial language\n- Data-driven\n- Minimal text, clear storyline\n- Structure: Problem -> Evidence -> Impact -> Strategy -> Action -> Decision\n- Do NOT change any numbers\n- Do NOT create new facts\n- Do NOT remove important caveats\n\nOutput as presentation outline with speaker notes.";
-  } else if(step === 'final'){
-    prompt = "You are creating a CONFIDENTIAL PERSONAL BRIEF for the analyst (not for the owner directly).\n\nFINAL SYNTHESIS:\n" + (c.results.synthesis || '[No synthesis]') + "\n\nPRESENTATION / OWNER MATERIALS:\n" + (c.results.presentation || '[No presentation]') + "\n\nCreate a Final Diagnostic Brief:\n\n## FINAL DIAGNOSTIC\n\n### EXECUTIVE SUMMARY\n(Brief summary of the actual situation)\n\n### CORE DIAGNOSIS\n(Main problem and strongest cause)\n\n### DECISION ADVICE\n(Maximum 3 options. For each: upside, downside, risk, business implication)\n\n### PROFESSIONAL VIEW\n(Analytical perspective based on evidence)\n\n### OWNER QUESTIONS\n(3-5 critical questions the owner might ask)\n\n### SUGGESTED ANSWERS\n(Brief, factual responses)\n\n### RED FLAGS\n(Warnings for the meeting)\n\n### DATA GAPS\n(Still missing data)\n\n### FINAL POSITION\n(3-5 sentence summary of the most defensible analytical position)\n\nIMPORTANT: Do not make decisions on behalf of the owner. Provide decision advice based on data. Final decision remains with humans.";
-  }
-
-  var box = document.getElementById('prompt-' + step);
-  var text = document.getElementById('prompt-text-' + step);
-  if(box && text){
-    text.textContent = prompt;
-    box.style.display = 'block';
-  }
-}
-
-function copyPrompt(step){
-  var text = document.getElementById('prompt-text-' + step);
-  if(!text || !text.textContent){
-    alert('Please generate the prompt first.');
-    return;
-  }
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text.textContent).then(function(){
-      alert('Prompt copied to clipboard!');
-    }).catch(function(){
-      fallbackCopy(text.textContent);
-    });
-  } else {
-    fallbackCopy(text.textContent);
-  }
-}
-
-function fallbackCopy(text){
-  var ta = document.createElement('textarea');
-  ta.value = text;
-  document.body.appendChild(ta);
-  ta.select();
-  document.execCommand('copy');
-  document.body.removeChild(ta);
-  alert('Prompt copied to clipboard!');
-}
-
-function saveStep(step){
-  var c = cases[currentCaseId];
-  if(!c) return;
-  var result = document.getElementById('result-' + step).value.trim();
-  if(!result){
-    alert('Please paste the AI result before saving.');
-    return;
-  }
-
-  c.results[step] = result;
-  c.stepStatus[step] = 'completed';
-  c.updatedAt = new Date().toISOString();
-
-  var stepIndex = STEPS.indexOf(step);
-  var nextStep = STEPS[stepIndex + 1];
-
-  if(nextStep){
-    c.status = nextStep;
-    c.stepStatus[nextStep] = 'in_progress';
-    saveCases();
-
-    if(nextStep === 'final'){
-      loadStep(nextStep);
-      showView('step6');
-    } else {
-      var nextView = STEP_VIEWS[nextStep];
-      loadStep(nextStep);
-      showView(nextView.replace('view-',''));
-    }
-  } else {
-    c.status = 'completed';
-    saveCases();
-    showView('complete');
-    renderProgress('complete-progress', c);
-  }
-}
-
-function skipStep(step){
-  if(!confirm('Skip this step? The workflow will continue without this AI input.')) return;
-  var c = cases[currentCaseId];
-  if(!c) return;
-  c.stepStatus[step] = 'completed';
-  c.results[step] = '[Skipped by user]';
-  c.updatedAt = new Date().toISOString();
-
-  var stepIndex = STEPS.indexOf(step);
-  var nextStep = STEPS[stepIndex + 1];
-
-  if(nextStep){
-    c.status = nextStep;
-    c.stepStatus[nextStep] = 'in_progress';
-    saveCases();
-    var nextView = STEP_VIEWS[nextStep];
-    loadStep(nextStep);
-    showView(nextView.replace('view-',''));
-  } else {
-    c.status = 'completed';
-    saveCases();
-    showView('complete');
-    renderProgress('complete-progress', c);
-  }
-}
-
-// ========== DASHBOARD ==========
-function updateDashboard(){
-  var allCases = Object.values(cases);
-  document.getElementById('dash-total').textContent = allCases.length;
-  document.getElementById('dash-active').textContent = allCases.filter(function(c){return c.status !== 'completed';}).length;
-  document.getElementById('dash-completed').textContent = allCases.filter(function(c){return c.status === 'completed';}).length;
-
-  var latest = allCases.sort(function(a,b){return new Date(b.updatedAt) - new Date(a.updatedAt);})[0];
-  document.getElementById('dash-latest').textContent = latest ? latest.name.substring(0,20) : '-';
-
-  var current = allCases.find(function(c){return c.status !== 'completed';});
-  var currentEl = document.getElementById('dash-current');
-  if(current){
-    currentEl.innerHTML = '<strong>' + escapeHtml(current.name) + '</strong><br><span style="color:var(--muted);font-size:.8rem;">Status: ' + current.status.toUpperCase() + '</span><br><button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="currentCaseId='' + current.id + '';continueCase();">Continue Latest Case</button>';
-  } else {
-    currentEl.innerHTML = '<span style="color:var(--muted);">No active case. <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="showView('input')">Create New Case</button></span>';
-  }
-}
-
-// ========== HISTORY ==========
-function renderHistory(){
-  var searchInput = document.getElementById('history-search');
-  var search = searchInput ? searchInput.value.toLowerCase() : '';
-  var list = document.getElementById('history-list');
-  var allCases = Object.values(cases).sort(function(a,b){return new Date(b.updatedAt) - new Date(a.updatedAt);});
-  var filtered = search ? allCases.filter(function(c){return c.name.toLowerCase().indexOf(search)!==-1 || c.data.toLowerCase().indexOf(search)!==-1;}) : allCases;
-
-  if(filtered.length === 0){
-    list.innerHTML = '<div class="empty"><div class="empty-icon">&#128193;</div><div>No cases found</div></div>';
-    return;
-  }
-
-  list.innerHTML = filtered.map(function(c){
-    var date = new Date(c.updatedAt).toLocaleDateString();
-    var statusColor = c.status === 'completed' ? 'var(--success)' : c.status === 'orientation' ? 'var(--warning)' : 'var(--primary)';
-    return '<div class="case-item" onclick="openCase('' + c.id + '')">' +
-      '<div class="info">' +
-        '<div class="name">' + escapeHtml(c.name) + '</div>' +
-        '<div class="meta">' + date + ' &middot; <span style="color:' + statusColor + '">' + c.status.toUpperCase() + '</span></div>' +
-      '</div>' +
-      '<div class="actions" onclick="event.stopPropagation()">' +
-        '<button class="btn btn-secondary btn-sm" onclick="renameCase('' + c.id + '')">Rename</button>' +
-        '<button class="btn btn-secondary btn-sm" onclick="duplicateCase('' + c.id + '')">Duplicate</button>' +
-        '<button class="btn btn-secondary btn-sm" onclick="exportSingleCase('' + c.id + '')">Export</button>' +
-        '<button class="btn btn-danger btn-sm" onclick="deleteCase('' + c.id + '')">Delete</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-function openCase(id){
-  currentCaseId = id;
-  var c = cases[id];
-  if(!c) return;
-  viewCaseSummary();
-}
-
-function continueCase(){
-  var c = cases[currentCaseId];
-  if(!c) return;
-
-  if(c.status === 'orientation'){
-    renderOrientation();
-    showView('orientation');
-  } else if(c.status === 'completed'){
-    viewCaseSummary();
-  } else {
-    var viewMap = {research:'step1', analysis:'step2', challenge:'step3', synthesis:'step4', presentation:'step5', final:'step6'};
-    var view = viewMap[c.status];
-    if(view){
-      loadStep(c.status);
-      showView(view);
-    }
-  }
-}
-
-function renameCase(id){
-  var c = cases[id];
-  if(!c) return;
-  var newName = prompt('New case name:', c.name);
-  if(newName && newName.trim()){
-    c.name = newName.trim();
-    c.updatedAt = new Date().toISOString();
-    saveCases();
-    renderHistory();
-    updateDashboard();
-  }
-}
-
-function duplicateCase(id){
-  var c = cases[id];
-  if(!c) return;
-  var newId = generateId();
-  var copy = JSON.parse(JSON.stringify(c));
-  copy.id = newId;
-  copy.name = copy.name + ' (Copy)';
-  copy.createdAt = new Date().toISOString();
-  copy.updatedAt = new Date().toISOString();
-  cases[newId] = copy;
-  saveCases();
-  renderHistory();
-  updateDashboard();
-}
-
-function deleteCase(id){
-  if(!confirm('Delete this case permanently?')) return;
-  delete cases[id];
-  if(currentCaseId === id) currentCaseId = null;
-  saveCases();
-  renderHistory();
-  updateDashboard();
-}
-
-function clearAllCases(){
-  if(!confirm('Delete ALL cases? This cannot be undone.')) return;
-  cases = {};
-  currentCaseId = null;
-  saveCases();
-  renderHistory();
-  updateDashboard();
-  showView('dashboard');
-}
-
-// ========== CASE SUMMARY ==========
-function viewCaseSummary(){
-  var c = cases[currentCaseId];
-  if(!c) return;
-
-  document.getElementById('summary-title').textContent = c.name;
-  renderProgress('summary-progress', c);
-
-  var html = '';
-
-  html += '<div class="card"><h2>Original Input</h2><div class="result-display">' + escapeHtml(c.data) + '</div></div>';
-  if(c.objective) html += '<div class="card"><h2>Objective</h2><div class="result-display">' + escapeHtml(c.objective) + '</div></div>';
-
-  if(c.orientation){
-    html += '<div class="card"><h2>Orientation</h2>';
-    html += '<h3>Facts</h3><div class="result-display">' + c.orientation.facts.map(function(f){return '&#8226; ' + escapeHtml(f);}).join('\n') + '</div>';
-    html += '<h3>Assumptions</h3><div class="result-display">' + c.orientation.assumptions.map(function(a){return '&#8226; ' + escapeHtml(a);}).join('\n') + '</div>';
-    html += '<h3>Questions</h3><div class="result-display">' + c.orientation.questions.map(function(q){return '&#8226; ' + escapeHtml(q);}).join('\n') + '</div>';
-    html += '</div>';
-  }
-
-  var resultLabels = {
-    research: 'Perplexity Research',
-    analysis: 'ChatGPT Business Analysis',
-    challenge: 'Gemini Critical Challenge',
-    synthesis: 'ChatGPT Final Synthesis',
-    presentation: 'Claude Executive Presentation',
-    final: 'Final Decision Brief'
-  };
-
-  var keys = Object.keys(c.results);
-  for(var i=0;i<keys.length;i++){
-    var key = keys[i];
-    var value = c.results[key];
-    if(value && value !== '[Skipped by user]'){
-      html += '<div class="card"><h2>' + resultLabels[key] + '</h2><div class="result-display">' + escapeHtml(value) + '</div></div>';
-    }
-  }
-
-  document.getElementById('summary-sections').innerHTML = html;
-  showView('summary');
-}
-
-// ========== EXPORT / IMPORT ==========
-function exportCase(){
-  var c = cases[currentCaseId];
-  if(!c) return;
-  var blob = new Blob([JSON.stringify(c, null, 2)], {type: 'application/json'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'case_' + c.id + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function exportSingleCase(id){
-  currentCaseId = id;
-  exportCase();
-}
-
-function exportDiagnostic(){
-  var c = cases[currentCaseId];
-  if(!c) return;
-  var md = '# ' + c.name + '\n\n';
-  md += '**Date:** ' + new Date(c.updatedAt).toLocaleString() + '\n\n';
-  md += '**Status:** ' + c.status.toUpperCase() + '\n\n';
-  md += '---\n\n';
-  md += '## Original Input\n\n' + c.data + '\n\n';
-  if(c.objective) md += '## Objective\n\n' + c.objective + '\n\n';
-  if(c.results.final) md += '## Final Decision Brief\n\n' + c.results.final + '\n\n';
-  if(c.results.synthesis) md += '## Executive Diagnosis\n\n' + c.results.synthesis + '\n\n';
-
-  var blob = new Blob([md], {type: 'text/markdown'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'diagnostic_' + c.id + '.md';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importCase(){
-  document.getElementById('import-file').click();
-}
-
-function handleImport(input){
-  var file = input.files[0];
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e){
-    try{
-      var data = JSON.parse(e.target.result);
-      if(data.id && data.data){
-        var newId = generateId();
-        data.id = newId;
-        data.name = (data.name || 'Imported Case') + ' (Imported)';
-        data.createdAt = new Date().toISOString();
-        data.updatedAt = new Date().toISOString();
-        cases[newId] = data;
-        saveCases();
-        renderHistory();
-        updateDashboard();
-        alert('Case imported successfully!');
-      } else {
-        alert('Invalid case file format.');
-      }
-    }catch(err){
-      alert('Error reading file: ' + err.message);
-    }
-    input.value = '';
-  };
-  reader.readAsText(file);
-}
-
-// ========== UTILS ==========
 function escapeHtml(text){
-  if(!text) return '';
-  var div = document.createElement('div');
+  if(!text) return "";
+  var div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
 
-// ========== START ==========
-init();
+function renderProgress(elementId, c){
+  var el = $(elementId);
+  if(!el) return;
+  var html = "";
+  for(var i=0;i<STEPS.length;i++){
+    var step = STEPS[i], cls = "progress-step", status = c.stepStatus[step];
+    if(status === "completed") cls += " completed";
+    else if(status === "in_progress") cls += " active";
+    else if(status === "waiting") cls += " waiting";
+    html += '<div class="' + cls + '">' + STEP_LABELS[step] + "</div>";
+  }
+  el.innerHTML = html;
+}
+
+function updateDashboard(){
+  var allCases = Object.values(cases);
+ $("dash-total").textContent = allCases.length;
+ $("dash-active").textContent = allCases.filter(function(c){return c.status !== "completed";}).length;
+ $("dash-completed").textContent = allCases.filter(function(c){return c.status === "completed";}).length;
+  var latest = allCases.sort(function(a,b){return new Date(b.updatedAt) - new Date(a.updatedAt);})[0];
+ $("dash-latest").textContent = latest ? latest.name.substring(0,20) : "-";
+  var current = allCases.find(function(c){return c.status !== "completed";});
+  var currentEl = $("dash-current");
+  if(current){
+    currentEl.innerHTML = '<strong>' + escapeHtml(current.name) + '</strong><br><span style="color:#94a3b8;font-size:.8rem;">Status: ' + current.status.toUpperCase() + '</span><br><button class="btn btn-primary btn-sm" id="btn-continue-dash" style="margin-top:8px;">Continue Latest Case</button>';
+    var btn = $("btn-continue-dash");
+    if(btn) btn.addEventListener("click", function(){ currentCaseId = current.id; continueCase(); });
+  } else {
+    currentEl.innerHTML = '<span style="color:#94a3b8;">No active case. <button class="btn btn-primary btn-sm" id="btn-dash-new2" style="margin-top:8px;">Create New Case</button></span>';
+    var btn2 = $("btn-dash-new2");
+    if(btn2) btn2.addEventListener("click", function(){ showView("input"); });
+  }
+}
+
+function renderHistory(){
+  var searchInput = $("history-search");
+  var search = searchInput ? searchInput.value.toLowerCase() : "";
+  var list = $("history-list");
+  var allCases = Object.values(cases).sort(function(a,b){return new Date(b.updatedAt) - new Date(a.updatedAt);});
+  var filtered = search ? allCases.filter(function(c){return c.name.toLowerCase().indexOf(search)!==-1 || c.data.toLowerCase().indexOf(search)!==-1;}) : allCases;
+  if(filtered.length === 0){
+    list.innerHTML = '<div class="empty"><div class="empty-icon">&#128193;</div><div>No cases found</div></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(function(c){
+    var date = new Date(c.updatedAt).toLocaleDateString();
+    var statusColor = c.status === "completed" ? "#10b981" : c.status === "orientation" ? "#f59e0b" : "#3b82f6";
+    return '<div class="case-item" data-id="' + c.id + '"><div class="info"><div class="name">' + escapeHtml(c.name) + '</div><div class="meta">' + date + ' &middot; <span style="color:' + statusColor + '">' + c.status.toUpperCase() + '</span></div></div><div class="actions"><button class="btn btn-secondary btn-sm btn-rename" data-id="' + c.id + '">Rename</button><button class="btn btn-secondary btn-sm btn-dup" data-id="' + c.id + '">Dup</button><button class="btn btn-secondary btn-sm btn-exp" data-id="' + c.id + '">Exp</button><button class="btn btn-danger btn-sm btn-del" data-id="' + c.id + '">Del</button></div></div>';
+  }).join("");
+  // Attach event listeners
+  var items = list.querySelectorAll(".case-item");
+  for(var i=0;i<items.length;i++){
+    items[i].addEventListener("click", function(e){ if(e.target.tagName === "BUTTON") return; currentCaseId = this.getAttribute("data-id"); viewCaseSummary(); });
+  }
+  var renames = list.querySelectorAll(".btn-rename");
+  for(var i=0;i<renames.length;i++) renames[i].addEventListener("click", function(e){ e.stopPropagation(); renameCase(this.getAttribute("data-id")); });
+  var dups = list.querySelectorAll(".btn-dup");
+  for(var i=0;i<dups.length;i++) dups[i].addEventListener("click", function(e){ e.stopPropagation(); duplicateCase(this.getAttribute("data-id")); });
+  var exps = list.querySelectorAll(".btn-exp");
+  for(var i=0;i<exps.length;i++) exps[i].addEventListener("click", function(e){ e.stopPropagation(); exportSingleCase(this.getAttribute("data-id")); });
+  var dels = list.querySelectorAll(".btn-del");
+  for(var i=0;i<dels.length;i++) dels[i].addEventListener("click", function(e){ e.stopPropagation(); deleteCase(this.getAttribute("data-id")); });
+}
+
+function generateOrientation(data, objective){
+  var lines = data.split("\n").filter(function(l){return l.trim();});
+  var facts=[], assumptions=[], questions=[], areas=[], gaps=[];
+  var text = data.toLowerCase();
+  if(text.indexOf("omzet")!==-1||text.indexOf("revenue")!==-1||text.indexOf("sales")!==-1||text.indexOf("turnover")!==-1){areas.push("Revenue Analysis"); gaps.push("Revenue breakdown by product/segment");}
+  if(text.indexOf("margin")!==-1||text.indexOf("profit")!==-1||text.indexOf("cost")!==-1){areas.push("Profitability & Cost"); gaps.push("Detailed cost breakdown");}
+  if(text.indexOf("kompetitor")!==-1||text.indexOf("competitor")!==-1||text.indexOf("market")!==-1){areas.push("Competitive Position"); gaps.push("Competitor pricing and market share");}
+  if(text.indexOf("karyawan")!==-1||text.indexOf("manpower")!==-1||text.indexOf("staff")!==-1||text.indexOf("employee")!==-1){areas.push("Workforce & Productivity"); gaps.push("Headcount and productivity metrics");}
+  if(text.indexOf("harga")!==-1||text.indexOf("price")!==-1||text.indexOf("pricing")!==-1){areas.push("Pricing Strategy"); gaps.push("Price elasticity data");}
+  if(text.indexOf("produk")!==-1||text.indexOf("product")!==-1){areas.push("Product Mix"); gaps.push("Product-level profitability");}
+  if(text.indexOf("lead")!==-1||text.indexOf("conversion")!==-1||text.indexOf("marketing")!==-1){areas.push("Sales Funnel"); gaps.push("Lead volume and conversion rates");}
+  if(areas.length===0){areas.push("General Business Performance"); gaps.push("Financial and operational data");}
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i];
+    if(/\d+%?|\d+\.\d+|\$\d+/.test(line)) facts.push(line.trim());
+    else if(/mungkin|maybe|probably|sepertinya/.test(line.toLowerCase())) assumptions.push(line.trim());
+  }
+  if(facts.length===0) facts.push("Case data provided");
+  if(assumptions.length===0) assumptions.push("Initial assumptions pending");
+  questions.push("What is the primary root cause?");
+  questions.push("What external factors are influencing this?");
+  questions.push("What data is missing?");
+  if(!objective) questions.push("What is the specific objective?");
+  var initProb = "";
+  for(var i=0;i<lines.length;i++){ if(lines[i].length>20){ initProb=lines[i].substring(0,200); break; }}
+  return {facts:facts.slice(0,8),assumptions:assumptions.slice(0,5),questions:questions,areas:areas,gaps:gaps,overview:{name:lines[0]?lines[0].substring(0,80):"Business Case",objective:objective||"To be determined",keyData:facts.slice(0,3).join("; "),initialProblem:initProb||"See full case data"}};
+}
+
+function renderOrientation(){
+  var c=cases[currentCaseId]; if(!c) return;
+  var o=c.orientation;
+ $("orient-name").textContent=o.overview.name;
+ $("orient-facts").innerHTML=o.facts.map(function(f){return '<div style="margin:4px 0;">&#8226; '+escapeHtml(f)+'</div>';}).join("");
+ $("orient-assumptions").innerHTML=o.assumptions.map(function(a){return '<div style="margin:4px 0;">&#8226; '+escapeHtml(a)+'</div>';}).join("");
+ $("orient-questions").innerHTML=o.questions.map(function(q){return '<div style="margin:4px 0;">&#8226; '+escapeHtml(q)+'</div>';}).join("");
+ $("orient-overview").innerHTML='<strong>Objective:</strong> '+escapeHtml(o.overview.objective)+'<br><strong>Key Data:</strong> '+escapeHtml(o.overview.keyData)+'<br><strong>Initial Problem:</strong> '+escapeHtml(o.overview.initialProblem);
+ $("orient-areas").innerHTML=o.areas.map(function(a){return '<span class="tag tag-fact">'+escapeHtml(a)+'</span>';}).join(" ");
+ $("orient-gaps").innerHTML=o.gaps.map(function(g){return '<div style="margin:4px 0;">&#8226; '+escapeHtml(g)+'</div>';}).join("");
+  renderProgress("orientation-progress",c);
+}
+
+function startWorkflow(){
+  var c=cases[currentCaseId]; if(!c) return;
+  c.status="research"; c.stepStatus.research="in_progress"; c.updatedAt=new Date().toISOString();
+  saveCases(); loadStep("research"); showView("step1");
+}
+
+function loadStep(step){
+  var c=cases[currentCaseId]; if(!c) return;
+  var resultArea=$("result-"+step);
+  if(resultArea&&c.results[step]) resultArea.value=c.results[step];
+  var promptBoxes=document.querySelectorAll(".prompt-box");
+  for(var i=0;i<promptBoxes.length;i++) promptBoxes[i].style.display="none";
+  var viewId=STEP_VIEWS[step]; if(viewId) renderProgress(viewId.replace("view-","")+"-progress",c);
+}
+
+function generatePrompt(step){
+  var c=cases[currentCaseId]; if(!c) return;
+  var prompt="";
+  if(step==="perplexity"){
+    prompt="You are a research analyst. I need external evidence for this business case.\n\nCASE DATA:\n"+c.data+"\n\nOBJECTIVE:\n"+(c.objective||"Identify key issues")+"\n\nPlease provide:\n1. Industry benchmarks\n2. Competitor info\n3. Regulatory factors\n4. External evidence\n5. Market trends\n\nBe factual. Cite sources.";
+  } else if(step==="analysis"){
+    prompt="You are a senior business analyst. Analyze this case.\n\nORIGINAL CASE:\n"+c.data+"\n\nOBJECTIVE:\n"+(c.objective||"Analyze")+"\n\nRESEARCH:\n"+(c.results.research||"[No research yet]")+"\n\nAnalyze:\n- What is happening?\n- Why? (Root cause)\n- Business impact\n- Facts vs Assumptions\n- Metrics: Revenue, YoY, Manpower, Productivity, Cost, Margin, Pricing, Product Mix, Leads, Conversion (if available)\n- Patterns and anomalies\n- Strategic options\n- Risks and unknowns\n\nOutput:\n1. What is happening?\n2. Why?\n3. Business impact\n4. Options\n5. Risks / Unknowns";
+  } else if(step==="challenge"){
+    prompt="You are an independent critical reviewer. Challenge this analysis.\n\nORIGINAL CASE:\n"+c.data+"\n\nRESEARCH:\n"+(c.results.research||"[None]")+"\n\nANALYSIS:\n"+(c.results.analysis||"[None]")+"\n\nTask:\n- Find unsupported assumptions\n- Find logical errors\n- Propose alternatives\n- Point out missing data\n- Identify blind spots\n\nIMPORTANT: Do not disagree for the sake of it. If analysis is strong, confirm it. If problems exist, explain and correct.\n\nOutput:\n1. Valid points\n2. Issues found\n3. Alternative explanations\n4. Missing data\n5. Overall assessment";
+  } else if(step==="synthesis"){
+    prompt="You are an Executive Analyst. Synthesize all work into a final diagnosis.\n\nORIGINAL CASE:\n"+c.data+"\n\nRESEARCH:\n"+(c.results.research||"[None]")+"\n\nANALYSIS:\n"+(c.results.analysis||"[None]")+"\n\nCHALLENGE:\n"+(c.results.challenge||"[None]")+"\n\nTask:\n- Combine evidence\n- Resolve contradictions\n- Reject unsupported assumptions\n- Retain strong conclusions\n- Determine root cause\n- Measure impact\n- Create options with trade-offs\n- Provide recommendation\n\nDO NOT vote between sources. Use data quality and logical consistency.\n\n## EXECUTIVE DIAGNOSIS\n\n### 1. What is happening?\n### 2. Why?\n### 3. Business impact\n### 4. Root cause\n### 5. Options\n### 6. Risks / Unknowns\n### 7. Recommended direction\n### 8. Decision required";
+  } else if(step==="presentation"){
+    prompt="Prepare an executive presentation for the owner.\n\nFINAL SYNTHESIS:\n"+(c.results.synthesis||"[None]")+"\n\nRequirements:\n- Simple, sharp, commercial\n- Data-driven\n- Minimal text, clear storyline\n- Structure: Problem -> Evidence -> Impact -> Strategy -> Action -> Decision\n- Do NOT change numbers\n- Do NOT create new facts\n- Do NOT remove caveats\n\nOutput as presentation outline with speaker notes.";
+  } else if(step==="final"){
+    prompt="Create a CONFIDENTIAL PERSONAL BRIEF for the analyst.\n\nFINAL SYNTHESIS:\n"+(c.results.synthesis||"[None]")+"\n\nPRESENTATION:\n"+(c.results.presentation||"[None]")+"\n\n## FINAL DIAGNOSTIC\n\n### EXECUTIVE SUMMARY\n### CORE DIAGNOSIS\n### DECISION ADVICE (max 3 options: upside, downside, risk, implication)\n### PROFESSIONAL VIEW\n### OWNER QUESTIONS (3-5)\n### SUGGESTED ANSWERS\n### RED FLAGS\n### DATA GAPS\n### FINAL POSITION (3-5 sentences)\n\nDo not decide for the owner. Provide advice based on data. Final decision is human.";
+  }
+  var box=$("prompt-"+step);
+  var text=$("prompt-text-"+step);
+  if(box&&text){ text.textContent=prompt; box.style.display="block"; }
+}
+
+function copyPrompt(step){
+  var text=$("prompt-text-"+step);
+  if(!text||!text.textContent){alert("Generate prompt first.");return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text.textContent).then(function(){alert("Copied!");}).catch(function(){fallbackCopy(text.textContent);});
+  } else { fallbackCopy(text.textContent); }
+}
+function fallbackCopy(txt){
+  var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("Copied!");
+}
+
+function saveStep(step){
+  var c=cases[currentCaseId]; if(!c) return;
+  var result=$("result-"+step).value.trim();
+  if(!result){alert("Paste AI result first.");return;}
+  c.results[step]=result; c.stepStatus[step]="completed"; c.updatedAt=new Date().toISOString();
+  var stepIndex=STEPS.indexOf(step), nextStep=STEPS[stepIndex+1];
+  if(nextStep){
+    c.status=nextStep; c.stepStatus[nextStep]="in_progress"; saveCases();
+    if(nextStep==="final"){loadStep(nextStep);showView("step6");}
+    else{var nextView=STEP_VIEWS[nextStep]; loadStep(nextStep); showView(nextView.replace("view-",""));}
+  } else {
+    c.status="completed"; saveCases(); showView("complete"); renderProgress("complete-progress",c);
+  }
+}
+
+function skipStep(step){
+  if(!confirm("Skip this step?")) return;
+  var c=cases[currentCaseId]; if(!c) return;
+  c.stepStatus[step]="completed"; c.results[step]="[Skipped]"; c.updatedAt=new Date().toISOString();
+  var stepIndex=STEPS.indexOf(step), nextStep=STEPS[stepIndex+1];
+  if(nextStep){
+    c.status=nextStep; c.stepStatus[nextStep]="in_progress"; saveCases();
+    var nextView=STEP_VIEWS[nextStep]; loadStep(nextStep); showView(nextView.replace("view-",""));
+  } else {
+    c.status="completed"; saveCases(); showView("complete"); renderProgress("complete-progress",c);
+  }
+}
+
+function continueCase(){
+  var c=cases[currentCaseId]; if(!c) return;
+  if(c.status==="orientation"){renderOrientation();showView("orientation");}
+  else if(c.status==="completed"){viewCaseSummary();}
+  else {var vm={research:"step1",analysis:"step2",challenge:"step3",synthesis:"step4",presentation:"step5",final:"step6"}; var v=vm[c.status]; if(v){loadStep(c.status);showView(v);} }
+}
+
+function viewCaseSummary(){
+  var c=cases[currentCaseId]; if(!c) return;
+ $("summary-title").textContent=c.name;
+  renderProgress("summary-progress",c);
+  var html="";
+  html+='<div class="card"><h2>Original Input</h2><div class="result-display">'+escapeHtml(c.data)+'</div></div>';
+  if(c.objective) html+='<div class="card"><h2>Objective</h2><div class="result-display">'+escapeHtml(c.objective)+'</div></div>';
+  if(c.orientation){
+    html+='<div class="card"><h2>Orientation</h2>';
+    html+='<h3>Facts</h3><div class="result-display">'+c.orientation.facts.map(function(f){return '&#8226; '+escapeHtml(f);}).join("\n")+'</div>';
+    html+='<h3>Assumptions</h3><div class="result-display">'+c.orientation.assumptions.map(function(a){return '&#8226; '+escapeHtml(a);}).join("\n")+'</div>';
+    html+='<h3>Questions</h3><div class="result-display">'+c.orientation.questions.map(function(q){return '&#8226; '+escapeHtml(q);}).join("\n")+'</div>';
+    html+='</div>';
+  }
+  var rl={research:"Perplexity Research",analysis:"ChatGPT Analysis",challenge:"Gemini Challenge",synthesis:"Final Synthesis",presentation:"Claude Presentation",final:"Final Decision Brief"};
+  var keys=Object.keys(c.results);
+  for(var i=0;i<keys.length;i++){
+    var key=keys[i], value=c.results[key];
+    if(value&&value!=="[Skipped]") html+='<div class="card"><h2>'+rl[key]+'</h2><div class="result-display">'+escapeHtml(value)+'</div></div>';
+  }
+ $("summary-sections").innerHTML=html;
+  showView("summary");
+}
+
+function renameCase(id){
+  var c=cases[id]; if(!c) return;
+  var newName=prompt("New name:",c.name);
+  if(newName&&newName.trim()){c.name=newName.trim();c.updatedAt=new Date().toISOString();saveCases();renderHistory();updateDashboard();}
+}
+function duplicateCase(id){
+  var c=cases[id]; if(!c) return;
+  var newId=generateId(), copy=JSON.parse(JSON.stringify(c));
+  copy.id=newId; copy.name=copy.name+" (Copy)"; copy.createdAt=new Date().toISOString(); copy.updatedAt=new Date().toISOString();
+  cases[newId]=copy; saveCases(); renderHistory(); updateDashboard();
+}
+function deleteCase(id){
+  if(!confirm("Delete?")) return;
+  delete cases[id]; if(currentCaseId===id) currentCaseId=null;
+  saveCases(); renderHistory(); updateDashboard();
+}
+function clearAllCases(){
+  if(!confirm("Delete ALL?")) return;
+  cases={}; currentCaseId=null; saveCases(); renderHistory(); updateDashboard(); showView("dashboard");
+}
+
+function exportCase(){
+  var c=cases[currentCaseId]; if(!c) return;
+  var blob=new Blob([JSON.stringify(c,null,2)],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a"); a.href=url; a.download="case_"+c.id+".json"; a.click(); URL.revokeObjectURL(url);
+}
+function exportSingleCase(id){currentCaseId=id; exportCase();}
+function exportDiagnostic(){
+  var c=cases[currentCaseId]; if(!c) return;
+  var md="# "+c.name+"\n\n**Date:** "+new Date(c.updatedAt).toLocaleString()+"\n\n**Status:** "+c.status.toUpperCase()+"\n\n---\n\n## Original Input\n\n"+c.data+"\n\n";
+  if(c.objective) md+="## Objective\n\n"+c.objective+"\n\n";
+  if(c.results.final) md+="## Final Decision Brief\n\n"+c.results.final+"\n\n";
+  if(c.results.synthesis) md+="## Executive Diagnosis\n\n"+c.results.synthesis+"\n\n";
+  var blob=new Blob([md],{type:"text/markdown"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a"); a.href=url; a.download="diagnostic_"+c.id+".md"; a.click(); URL.revokeObjectURL(url);
+}
+function importCase(){ $("import-file").click(); }
+function handleImport(input){
+  var file=input.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(data.id&&data.data){
+        var newId=generateId(); data.id=newId; data.name=(data.name||"Imported")+" (Imported)";
+        data.createdAt=new Date().toISOString(); data.updatedAt=new Date().toISOString();
+        cases[newId]=data; saveCases(); renderHistory(); updateDashboard(); alert("Imported!");
+      } else {alert("Invalid format.");}
+    }catch(err){alert("Error: "+err.message);}
+    input.value="";
+  };
+  reader.readAsText(file);
+}
+
+function handleFileUpload(input){
+  var file = input.files[0];
+  if(!file) return;
+  var status = $("file-status");
+  var textarea = $("case-data");
+  var ext = file.name.split(".").pop().toLowerCase();
+  var textExts = ["txt","csv","md","json","html","xml","js","css","py"];
+  status.textContent = "File selected: " + file.name + " (" + (file.size/1024).toFixed(1) + " KB)";
+  if(textExts.indexOf(ext) !== -1 || file.type.indexOf("text/") === 0){
+    var reader = new FileReader();
+    reader.onload = function(e){ textarea.value = e.target.result; status.textContent = "File read: " + file.name; };
+    reader.readAsText(file);
+  } else if(file.type.indexOf("image/") === 0){
+    textarea.value = "[Image: " + file.name + "]\n\nPlease describe the image content here.";
+    status.textContent = "Image selected. Describe content below.";
+  } else {
+    textarea.value = "[File: " + file.name + " (" + ext.toUpperCase() + ")]\n\nPaste content manually.";
+    status.textContent = ext.toUpperCase() + " file. Paste content manually.";
+  }
+}
+
+function analyzeCase(){
+  var data = $("case-data").value.trim();
+  var objective = $("case-objective").value.trim();
+  if(!data){ alert("Please enter case data."); return; }
+  var caseId = generateId();
+  var caseName = data.split("\n")[0].substring(0,60) || "Untitled Case";
+  var now = new Date().toISOString();
+  cases[caseId] = {
+    id: caseId, name: caseName, data: data, objective: objective,
+    createdAt: now, updatedAt: now, status: "orientation",
+    stepStatus: {input:"completed",research:"not_started",analysis:"not_started",challenge:"not_started",synthesis:"not_started",presentation:"not_started",final:"not_started"},
+    orientation: generateOrientation(data, objective), results: {}
+  };
+  currentCaseId = caseId;
+  saveCases();
+  renderOrientation();
+  showView("orientation");
+}
+
+// ========== EVENT LISTENERS ==========
+document.addEventListener("DOMContentLoaded", function(){
+  // Nav
+  $("nav-dashboard").addEventListener("click", function(){ showView("dashboard"); });
+  $("nav-new").addEventListener("click", function(){ showView("input"); });
+  $("nav-history").addEventListener("click", function(){ showView("history"); });
+
+  // Dashboard
+  $("btn-dash-new").addEventListener("click", function(){ showView("input"); });
+  $("btn-dash-history").addEventListener("click", function(){ showView("history"); });
+
+  // Input
+  $("file-input").addEventListener("change", function(){ handleFileUpload(this); });
+  $("btn-analyze").addEventListener("click", analyzeCase);
+
+  // Orientation
+  $("btn-start-workflow").addEventListener("click", startWorkflow);
+
+  // Step 1 - Perplexity
+  $("btn-gen-perplexity").addEventListener("click", function(){ generatePrompt("perplexity"); });
+  $("btn-copy-perplexity").addEventListener("click", function(){ copyPrompt("perplexity"); });
+  $("btn-copybox-perplexity").addEventListener("click", function(){ copyPrompt("perplexity"); });
+  $("btn-save-perplexity").addEventListener("click", function(){ saveStep("research"); });
+  $("btn-skip-perplexity").addEventListener("click", function(){ skipStep("research"); });
+
+  // Step 2 - Analysis
+  $("btn-gen-analysis").addEventListener("click", function(){ generatePrompt("analysis"); });
+  $("btn-copy-analysis").addEventListener("click", function(){ copyPrompt("analysis"); });
+  $("btn-copybox-analysis").addEventListener("click", function(){ copyPrompt("analysis"); });
+  $("btn-save-analysis").addEventListener("click", function(){ saveStep("analysis"); });
+  $("btn-skip-analysis").addEventListener("click", function(){ skipStep("analysis"); });
+
+  // Step 3 - Challenge
+  $("btn-gen-challenge").addEventListener("click", function(){ generatePrompt("challenge"); });
+  $("btn-copy-challenge").addEventListener("click", function(){ copyPrompt("challenge"); });
+  $("btn-copybox-challenge").addEventListener("click", function(){ copyPrompt("challenge"); });
+  $("btn-save-challenge").addEventListener("click", function(){ saveStep("challenge"); });
+  $("btn-skip-challenge").addEventListener("click", function(){ skipStep("challenge"); });
+
+  // Step 4 - Synthesis
+  $("btn-gen-synthesis").addEventListener("click", function(){ generatePrompt("synthesis"); });
+  $("btn-copy-synthesis").addEventListener("click", function(){ copyPrompt("synthesis"); });
+  $("btn-copybox-synthesis").addEventListener("click", function(){ copyPrompt("synthesis"); });
+  $("btn-save-synthesis").addEventListener("click", function(){ saveStep("synthesis"); });
+  $("btn-skip-synthesis").addEventListener("click", function(){ skipStep("synthesis"); });
+
+  // Step 5 - Presentation
+  $("btn-gen-presentation").addEventListener("click", function(){ generatePrompt("presentation"); });
+  $("btn-copy-presentation").addEventListener("click", function(){ copyPrompt("presentation"); });
+  $("btn-copybox-presentation").addEventListener("click", function(){ copyPrompt("presentation"); });
+  $("btn-save-presentation").addEventListener("click", function(){ saveStep("presentation"); });
+  $("btn-skip-presentation").addEventListener("click", function(){ skipStep("presentation"); });
+
+  // Step 6 - Final
+  $("btn-gen-final").addEventListener("click", function(){ generatePrompt("final"); });
+  $("btn-copy-final").addEventListener("click", function(){ copyPrompt("final"); });
+  $("btn-copybox-final").addEventListener("click", function(){ copyPrompt("final"); });
+  $("btn-save-final").addEventListener("click", function(){ saveStep("final"); });
+  $("btn-skip-final").addEventListener("click", function(){ skipStep("final"); });
+
+  // Complete
+  $("btn-view-summary").addEventListener("click", viewCaseSummary);
+  $("btn-export-case").addEventListener("click", exportCase);
+  $("btn-export-md").addEventListener("click", exportDiagnostic);
+  $("btn-new-from-complete").addEventListener("click", function(){ showView("input"); });
+
+  // History
+  $("history-search").addEventListener("input", renderHistory);
+  $("btn-import").addEventListener("click", importCase);
+  $("btn-clear-all").addEventListener("click", clearAllCases);
+  $("import-file").addEventListener("change", function(){ handleImport(this); });
+
+  // Summary
+  $("btn-back-history").addEventListener("click", function(){ showView("history"); });
+  $("btn-continue-case").addEventListener("click", continueCase);
+  $("btn-export-json-summary").addEventListener("click", exportCase);
+  $("btn-export-md-summary").addEventListener("click", exportDiagnostic);
+
+  // Init
+  init();
+});
+})();
 </script>
 </body>
 </html>
